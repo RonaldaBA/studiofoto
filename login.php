@@ -5,13 +5,14 @@ if (isset($_POST['submit'])) {
   $username = $_POST['username'];
   $password = $_POST['password'];
   $role = $_POST['role'];
-
+  $coba = 0;
+  
   //$sql = "SELECT * FROM login WHERE username='$username' and password='$password' LIMIT 1";
   $sql = "SELECT * FROM user WHERE username='$username'";
 
   $result = mysqli_query($connection, $sql);
   $row = mysqli_fetch_assoc($result);
-  //var_dump($row);
+  var_dump($row);
 
   if ((mysqli_num_rows($result) === 1) && ($password==$row['password'])) {
     $_SESSION['login'] = $row;
