@@ -117,7 +117,7 @@ session_start();
 
       <?php if(isset($_SESSION['login'])): ?>
         <li class="nav-item ml-lg-3">
-          <a class="btn btn-success rounded-pill px-4" href="signup/signup.php">Sign Up</a>
+          <a class="btn btn-success rounded-pill px-4" href="signup.php">Sign Up</a>
         </li>
       <?php else: ?>
         <li class="nav-item ml-lg-3">
