@@ -28,7 +28,7 @@ if (isset($_POST['submit'])) {
         header('Location: dashboard/dashboard_photographer.php');
         exit;     
       } else {
-        header('Location: dashboard/dashboard_customer.php');
+        header('Location: dashboard_customer/dashboard_customer.php');
         exit;
       }
       
