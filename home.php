@@ -178,17 +178,17 @@ session_start();
   <div class="row">
     <div class="col-md-4 mb-4">
       <div class="gallery-card">
-        <img src="assets/images/gallery1.jpg" alt="Gallery 1">
+        <img src="assets/img/gallery1.jpg" alt="Gallery 1">
       </div>
     </div>
     <div class="col-md-4 mb-4">
       <div class="gallery-card">
-        <img src="assets/images/gallery2.jpg" alt="Gallery 2">
+        <img src="assets/img/gallery2.jpg" alt="Gallery 2">
       </div>
     </div>
     <div class="col-md-4 mb-4">
       <div class="gallery-card">
-        <img src="assets/images/gallery3.jpg" alt="Gallery 3">
+        <img src="assets/img/gallery3.jpg" alt="Gallery 3">
       </div>
     </div>
   </div>
