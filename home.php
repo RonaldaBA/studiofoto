@@ -157,8 +157,8 @@ session_start();
 <!-- ===== HERO ===== -->
 <section class="hero">
   <div>
-    <h1>Capture Your Best Moment</h1>
-    <p>Photo studio modern dengan konsep minimalis & pencahayaan profesional</p>
+    <h1>RichArt Photo Studio</h1>
+    <p>Framing Your Moments Perfectly</p>
     <a href="login.php" class="btn btn-success mt-4 px-5 py-2 rounded-pill">
       Booking Sekarang
     </a>
