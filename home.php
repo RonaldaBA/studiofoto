@@ -74,9 +74,11 @@ session_start();
 
     .gallery-card img {
       width: 100%;
-      height: 260px;
-      object-fit: cover;
+      height: auto;
+      object-fit: contain;
+      display: block;
     }
+
 
     /* CTA */
     .cta {
