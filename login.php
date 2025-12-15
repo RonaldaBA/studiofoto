@@ -1,40 +1,56 @@
 <?php
-require_once 'helper/connection.php';
+require_once __DIR__ . '/helper/connection.php';
 session_start();
+
 if (isset($_POST['submit'])) {
-  $username = $_POST['username'];
-  $password = $_POST['password'];
-  $role = $_POST['role'];
-  $coba = 0;
-  
-  //$sql = "SELECT * FROM login WHERE username='$username' and password='$password' LIMIT 1";
-  $sql = "SELECT * FROM user WHERE username='$username'";
+    $input    = $_POST['username']; // NAMA untuk customer
+    $password = $_POST['password'];
 
-  $result = mysqli_query($connection, $sql);
-  $row = mysqli_fetch_assoc($result);
-  var_dump($row);
+    /**
+     * =====================
+     * 1. LOGIN STAFF (username)
+     * =====================
+     */
+    $sqlUser = "SELECT * FROM user WHERE username='$input' LIMIT 1";
+    $resultUser = mysqli_query($connection, $sqlUser);
+    $user = mysqli_fetch_assoc($resultUser);
 
-  if ((mysqli_num_rows($result) === 1) && ($password==$row['password'])) {
-    $_SESSION['login'] = $row;
-    $_SESSION['user_id'] = $row['id'];
-    $_SESSION['role'] = strtolower($row['role']);
-      if ($_SESSION['role'] === 'manajer') {
-        header('Location: dashboard/dashboard_manager.php');
+    if ($user && $password === $user['password']) {
+        $_SESSION['login']   = true;
+        $_SESSION['role']    = strtolower($user['role']);
+        $_SESSION['user_id'] = $user['id'];
+
+        if ($_SESSION['role'] === 'manajer') {
+            header('Location: dashboard/dashboard_manager.php');
+        } elseif ($_SESSION['role'] === 'customer service') {
+            header('Location: dashboard/dashboard_customerservice.php');
+        } elseif ($_SESSION['role'] === 'fotografer') {
+            header('Location: dashboard/dashboard_photographer.php');
+        }
         exit;
-      } elseif ($_SESSION['role'] === 'customer service') {
-        header('Location: dashboard/dashboard_customerservice.php');
-        exit;
-      } elseif ($_SESSION['role'] === 'fotografer') {
-        header('Location: dashboard/dashboard_photographer.php');
-        exit;     
-      } else {
+    }
+
+    /**
+     * =====================
+     * 2. LOGIN CUSTOMER (NAMA)
+     * =====================
+     */
+    $sqlCustomer = "SELECT * FROM customer WHERE nama='$input' LIMIT 1";
+    $resultCustomer = mysqli_query($connection, $sqlCustomer);
+    $customer = mysqli_fetch_assoc($resultCustomer);
+
+    if ($customer && $password === $customer['password']) {
+        $_SESSION['login']   = true;
+        $_SESSION['role']    = 'customer';
+        $_SESSION['id_customer'] = $customer['id_customer'];
+        $_SESSION['nama']    = $customer['nama'];
+
         header('Location: dashboard_customer/dashboard_customer.php');
         exit;
-      }
-      
-  } else {
+    }
+
+    // kalau dua-duanya gagal
     $error = true;
-  }
 }
 ?>
 
@@ -45,6 +61,7 @@ if (isset($_POST['submit'])) {
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Login &mdash; RichArt Studio</title>
+  <h1></h1>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
