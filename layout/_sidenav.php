@@ -14,6 +14,7 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
       <a href="index.php">Art</a>
     </div>
     <ul class="sidebar-menu">
+      <!-- coba -->
 
 <?php if ($role == 'manajer') : ?>
       <li class="menu-header">Dashboard</li>
