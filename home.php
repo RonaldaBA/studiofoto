@@ -5,7 +5,7 @@ session_start();
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>RichArt Studio | Self Photo Studio</title>
+  <title>RichArt Studio | Photo Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap -->
@@ -67,7 +67,7 @@ session_start();
       <?php if(isset($_SESSION['login'])): ?>
         <li class="nav-item">
           <a class="nav-link btn btn-success text-white ml-3" href="dashboard/index.php">
-            Dashboard
+            Sign Up
           </a>
         </li>
       <?php else: ?>
@@ -84,7 +84,7 @@ session_start();
 <!-- ===== HERO ===== -->
 <section class="hero">
   <h1>Capture Your Best Moment</h1>
-  <p>Self Photo Studio modern dengan pencahayaan profesional</p>
+  <p></p>
 </section>
 
 <!-- ===== STUDIO INFO ===== -->
