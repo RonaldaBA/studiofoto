@@ -29,6 +29,12 @@ $terakhir = mysqli_fetch_assoc(
     ")
 );
 
+$bulan = [
+    1 => 'Januari', 'Februari', 'Maret', 'April',
+    'Mei', 'Juni', 'Juli', 'Agustus',
+    'September', 'Oktober', 'November', 'Desember'
+];
+
 /* ===== PESANAN TERAKHIR ===== */
 $pesananTerakhir = mysqli_query($connection, "
     SELECT p.tgl_pemesanan, pk.nama_paket, p.status_pemesanan
@@ -188,7 +194,19 @@ body {
             <div class="stat-card">
                 <div class="stat-title">Booking Terakhir</div>
                 <div class="stat-value">
-                    <?= $terakhir ? date('d M Y', strtotime($terakhir['tgl_pemesanan'])) : '-'; ?>
+                    <?php
+                    if (!empty($terakhir['tgl_pemesanan'])) {
+                        $tanggal = strtotime($terakhir['tgl_pemesanan']);
+                        $hari = date('d', $tanggal);
+                        $bulanIndo = $bulan[(int)date('m', $tanggal)];
+                        $tahun = date('Y', $tanggal);
+                    } else {
+                        $hari = '-';
+                        $bulanIndo = '-';
+                        $tahun = '-';
+                    }
+                    ?>
+                    <?= $terakhir ? $hari . ' ' . $bulanIndo . ' ' . $tahun : '-'; ?>
                 </div>
             </div>
         </div>
@@ -217,12 +235,23 @@ body {
             <?php
             if (mysqli_num_rows($pesananTerakhir) > 0) {
                 while ($row = mysqli_fetch_assoc($pesananTerakhir)) {
-                    echo "
+
+                    // Cek tanggal pemesanan
+                    if (!empty($row['tgl_pemesanan'])) {
+                        $tanggal = strtotime($row['tgl_pemesanan']);
+                        $tanggalIndo = date('d', $tanggal) . ' ' .
+                            $bulan[(int)date('m', $tanggal)] . ' ' .
+                            date('Y', $tanggal);
+                    } else {
+                        $tanggalIndo = '-';
+                    }
+                    ?>
                     <tr>
-                        <td>".date('d M Y', strtotime($row['tgl_pemesanan']))."</td>
-                        <td>{$row['nama_paket']}</td>
-                        <td>{$row['status_pemesanan']}</td>
-                    </tr>";
+                        <td><?= $tanggalIndo ?></td>
+                        <td><?= htmlspecialchars($row['nama_paket']) ?></td>
+                        <td><?= htmlspecialchars($row['status_pemesanan']) ?></td>
+                    </tr>
+                    <?php
                 }
             } else {
                 echo "<tr><td colspan='3' class='text-center text-muted'>Belum ada pesanan</td></tr>";

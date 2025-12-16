@@ -5,6 +5,12 @@ include "../helper/connection.php";
 // Ambil id_customer dari session
 $id_customer = $_SESSION['id_customer'];
 
+$bulan = [
+    1 => 'Januari', 'Februari', 'Maret', 'April',
+    'Mei', 'Juni', 'Juli', 'Agustus',
+    'September', 'Oktober', 'November', 'Desember'
+];
+
 // Query untuk mengambil data pemesanan customer
 $query = mysqli_query($connection, "
     SELECT 
@@ -152,7 +158,19 @@ if (!$query) {
                         ?>
                         <tr>
                             <td><?= $no++; ?></td>
-                            <td><?= $tgl; ?></td>
+                            <?php
+                            if (!empty($terakhir['tgl_pemesanan'])) {
+                                $tanggal = strtotime($terakhir['tgl_pemesanan']);
+                                $hari = date('d', $tanggal);
+                                $bulanIndo = $bulan[(int)date('m', $tanggal)];
+                                $tahun = date('Y', $tanggal);
+                            } else {
+                                $hari = '-';
+                                $bulanIndo = '-';
+                                $tahun = '-';
+                            }
+                            ?>
+                            <td><?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?></td>
                             <td><?= htmlspecialchars($row['nama_paket']); ?></td>
                             <td>
                                 <span class="badge badge-status <?= $badgeClass; ?>">

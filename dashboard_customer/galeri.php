@@ -173,21 +173,33 @@ $result = $stmt->get_result();
                         <h6>RichArt Studio</h6>
                         <?php if (!empty($row['upload_date'])): ?>
                         <?php
-                            $tanggal = strtotime($row['tgl_pemesanan']);
-                            $hari = date('d', $tanggal);
-                            $bulanIndo = $bulan[(int)date('m', $tanggal)];
-                            $tahun = date('Y', $tanggal);
+                            if (!empty($terakhir['tgl_pemesanan'])) {
+                                $tanggal = strtotime($terakhir['tgl_pemesanan']);
+                                $hari = date('d', $tanggal);
+                                $bulanIndo = $bulan[(int)date('m', $tanggal)];
+                                $tahun = date('Y', $tanggal);
+                            } else {
+                                $hari = '-';
+                                $bulanIndo = '-';
+                                $tahun = '-';
+                            }
 
-                            $tanggalupload = strtotime($row['upload_date']);
-                            $hariupload = date('d', $tanggalupload);
-                            $bulanIndoupload = $bulan[(int)date('m', $tanggalupload)];
-                            $tahunupload = date('Y', $tanggalupload);
+                            if (!empty($terakhir['tgl_pemesanan'])) {
+                                $tanggalupload = strtotime($terakhir['tgl_pemesanan']);
+                                $hariupload = date('d', $tanggalupload);
+                                $bulanIndoupload = $bulan[(int)date('m', $tanggalupload)];
+                                $tahunupload = date('Y', $tanggalupload);
+                            } else {
+                                $hari = '-';
+                                $bulanIndo = '-';
+                                $tahun = '-';
+                            }
                         ?>
                             Dipesan pada <?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?><br>
-                            Diunggah pada <?= $hariupload . ' ' . $bulanIndoupload . ' ' . $tahunupload ?>
+                            <!-- Diunggah pada <?= $hariupload . ' ' . $bulanIndoupload . ' ' . $tahunupload ?> -->
                         <?php else: ?>
                             Dipesan pada <?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?><br>
-                            Foto masih dalam proses
+                            <!-- Foto masih dalam proses -->
                         <?php endif; ?>
                     </div>
                 </div>
