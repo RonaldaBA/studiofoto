@@ -3,12 +3,12 @@ include "../helper/auth.php";
 include "../helper/connection.php";
 isLogin();
 
-$id_user = $_SESSION['id_user'];
+$id_customer = $_SESSION['id_customer'];
 $editMode = isset($_GET['edit']);
 
 // ambil data customer
 $result = mysqli_query($connection, "
-    SELECT * FROM customer WHERE id_user = '$id_user' LIMIT 1
+    SELECT * FROM customer WHERE id_customer = '$id_customer' LIMIT 1
 ");
 $customer = mysqli_fetch_assoc($result);
 
@@ -26,7 +26,7 @@ if (isset($_POST['update'])) {
                 email = '$email',
                 no_hp = '$no_wa',
                 password = '$pass'
-            WHERE id_user = '$id_user'
+            WHERE id_customer = '$id_customer'
         ";
     } else {
         $query = "
@@ -34,7 +34,7 @@ if (isset($_POST['update'])) {
                 nama = '$nama',
                 email = '$email',
                 no_hp = '$no_wa'
-            WHERE id_user = '$id_user'
+            WHERE id_customer = '$id_customer'
         ";
     }
 
