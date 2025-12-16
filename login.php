@@ -18,6 +18,7 @@ if (isset($_POST['submit'])) {
     if ($user && $password === $user['password']) {
         $_SESSION['login']   = true;
         $_SESSION['role']    = strtolower($user['role']);
+        $_SESSION['username'] = $user['username'];
         $_SESSION['user_id'] = $user['id'];
 
         if ($_SESSION['role'] === 'manajer') {

@@ -44,7 +44,7 @@ require_once '../helper/connection.php';
               
               <tr>
                 <td>ID Customer</td>
-                <td><input class="form-control" type="number" name="id_user" size="20" required></td>
+                <td><input class="form-control" type="number" name="id_customer" size="20" required></td>
               </tr>
 
               <tr>

@@ -15,6 +15,12 @@ if ($id_customer === null) {
     exit();
 }
 
+$bulan = [
+    1 => 'Januari', 'Februari', 'Maret', 'April',
+    'Mei', 'Juni', 'Juli', 'Agustus',
+    'September', 'Oktober', 'November', 'Desember'
+];
+
 /* =============================
    QUERY FOTO HASIL CUSTOMER
    ============================= */
@@ -164,13 +170,24 @@ $result = $stmt->get_result();
                 <div class="gallery-item" data-toggle="modal" data-target="#<?= $modalId ?>">
                     <img src="<?= htmlspecialchars($photoUrl) ?>" alt="Hasil Foto">
                     <div class="gallery-caption">
-                        <h6>Hasil Foto</h6>
+                        <h6>RichArt Studio</h6>
                         <?php if (!empty($row['upload_date'])): ?>
-                            Dipesan pada <?= date('d M Y', strtotime($row['tgl_pemesanan'])) ?><br>
-                            Diunggah pada <?= date('d M Y', strtotime($row['upload_date'])) ?>
+                        <?php
+                            $tanggal = strtotime($row['tgl_pemesanan']);
+                            $hari = date('d', $tanggal);
+                            $bulanIndo = $bulan[(int)date('m', $tanggal)];
+                            $tahun = date('Y', $tanggal);
+
+                            $tanggalupload = strtotime($row['upload_date']);
+                            $hariupload = date('d', $tanggalupload);
+                            $bulanIndoupload = $bulan[(int)date('m', $tanggalupload)];
+                            $tahunupload = date('Y', $tanggalupload);
+                        ?>
+                            Dipesan pada <?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?><br>
+                            Diunggah pada <?= $hariupload . ' ' . $bulanIndoupload . ' ' . $tahunupload ?>
                         <?php else: ?>
-                            Dipesan pada <?= date('d M Y', strtotime($row['tgl_pemesanan'])) ?><br>
-                            Diunggah pada -
+                            Dipesan pada <?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?><br>
+                            Foto masih dalam proses
                         <?php endif; ?>
                     </div>
                 </div>
