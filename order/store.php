@@ -6,10 +6,10 @@ $id = $_POST['id_pemesanan'];
 $tglpesan = $_POST['tgl_pemesanan'];
 $status = $_POST['status_pemesanan'];
 $ringkasan = $_POST['ringkasan_biaya'];
-$iduser = $_POST['id_user'];
+$iduser = $_POST['id_customer'];
 $idpaket = $_POST['id_paket'];
 
-$query = mysqli_query($connection, "insert into pemesanan(id_pemesanan, tgl_pemesanan, status_pemesanan, ringkasan_biaya, id_user, id_paket) value('$id', '$tglpesan', '$status', '$ringkasan', '$iduser', '$idpaket')");
+$query = mysqli_query($connection, "insert into pemesanan(id_pemesanan, tgl_pemesanan, status_pemesanan, ringkasan_biaya, id_customer, id_paket) value('$id', '$tglpesan', '$status', '$ringkasan', '$iduser', '$idpaket')");
 if ($query) {
   $_SESSION['info'] = [
     'status' => 'success',

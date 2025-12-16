@@ -45,8 +45,8 @@ $query = mysqli_query($connection, "SELECT * FROM pemesanan WHERE id_pemesanan='
                   <td><input class="form-control" type="number" name="ringkasan_biaya" size="20" required value="<?= $row['ringkasan_biaya'] ?>"></td>
                 </tr>
                 <tr>
-                  <td>ID Pengguna</td>
-                  <td><input class="form-control" type="number" name="id_user" size="20" required value="<?= $row['id_user'] ?>"></td>
+                  <td>ID Customer</td>
+                  <td><input class="form-control" type="number" name="id_customer" size="20" required value="<?= $row['id_customer'] ?>"></td>
                 </tr>
                 <tr>
                   <td>ID Paket</td>

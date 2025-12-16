@@ -32,16 +32,16 @@ $result = mysqli_query($connection, "SELECT * FROM customer");
                 ?>
 
                   <tr>
-                    <td><?= $data['id_user'] ?></td>
+                    <td><?= $data['id_customer'] ?></td>
                     <td><?= $data['nama'] ?></td>
                     <td><?= $data['email'] ?></td>
                     <td><?= $data['password'] ?></td>
                     <td><?= $data['no_hp'] ?></td>
                     <td>
-                      <a class="btn btn-sm btn-danger mb-md-0 mb-1" href="delete.php?id_user=<?= $data['id_user'] ?>">
+                      <a class="btn btn-sm btn-danger mb-md-0 mb-1" href="delete.php?id_customer=<?= $data['id_customer'] ?>">
                         <i class="fas fa-trash fa-fw"></i>
                       </a>
-                      <a class="btn btn-sm btn-info" href="edit.php?id_user=<?= $data['id_user'] ?>">
+                      <a class="btn btn-sm btn-info" href="edit.php?id_customer=<?= $data['id_customer'] ?>">
                         <i class="fas fa-edit fa-fw"></i>
                       </a>
                     </td>

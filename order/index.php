@@ -2,7 +2,29 @@
 require_once '../layout/_top.php';
 require_once '../helper/connection.php';
 
-$result = mysqli_query($connection, "SELECT * FROM pemesanan");
+$result = mysqli_query($connection, "
+    SELECT 
+        p.id_pemesanan,
+        p.tgl_pemesanan,
+        p.status_pemesanan,
+        p.ringkasan_biaya,
+        p.id_customer,
+        c.nama,
+        pk.nama_paket,
+        pk.deskripsi,
+        p.id_paket,
+        pk.harga_paket
+    FROM pemesanan p
+    JOIN customer c ON p.id_customer = c.id_customer
+    JOIN paket pk ON p.id_paket = pk.id_paket
+");
+
+$bulan = [
+    1 => 'Januari', 'Februari', 'Maret', 'April',
+    'Mei', 'Juni', 'Juli', 'Agustus',
+    'September', 'Oktober', 'November', 'Desember'
+];
+
 ?>
 
 <section class="section">
@@ -22,8 +44,10 @@ $result = mysqli_query($connection, "SELECT * FROM pemesanan");
                   <th>Tanggal Pemesanan</th>
                   <th>Status Pemesanan</th>
                   <th>Ringkasan Biaya</th>
-                  <th>ID Pengguna</th>
+                  <th>ID Customer</th>
+                  <th>Nama Customer</th>
                   <th>ID Paket</th>
+                  <th>Nama Paket</th>
                   <th style="width: 150">Aksi</th>
                 </tr>
               </thead>
@@ -34,7 +58,13 @@ $result = mysqli_query($connection, "SELECT * FROM pemesanan");
 
                   <tr>
                     <td><?= $data['id_pemesanan'] ?></td>
-                    <td><?= $data['tgl_pemesanan'] ?></td>
+                    <?php
+                      $tanggal = strtotime($data['tgl_pemesanan']);
+                      $hari = date('d', $tanggal);
+                      $bulanIndo = $bulan[(int)date('m', $tanggal)];
+                      $tahun = date('Y', $tanggal);
+                    ?>
+                    <td><?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?></td>
                     <td>
                       <?php if ($data['status_pemesanan'] == 'Selesai'): ?>
                           <span class="badge bg-success text-light rounded-pill px-3 py-2">
@@ -50,9 +80,11 @@ $result = mysqli_query($connection, "SELECT * FROM pemesanan");
                           </span>
                       <?php endif; ?>
                     </td>
-                    <td><?= $data['ringkasan_biaya'] ?></td>
-                    <td><?= $data['id_user'] ?></td>
+                    <td>Rp <?= number_format($data['ringkasan_biaya'], 0, ',', '.') ?></td>
+                    <td><?= $data['id_customer'] ?></td>
+                    <td><?= $data['nama'] ?></td>
                     <td><?= $data['id_paket'] ?></td>
+                    <td><?= $data['nama_paket'] ?></td>
                     <td>
                       <a class="btn btn-sm btn-danger mb-md-0 mb-1" href="delete.php?id_pemesanan=<?= $data['id_pemesanan'] ?>">
                         <i class="fas fa-trash fa-fw"></i>
