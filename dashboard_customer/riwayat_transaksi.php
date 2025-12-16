@@ -2,8 +2,8 @@
 include "../helper/auth.php";
 include "../helper/connection.php";
 
-// Ambil id_user dari session
-$id_user = $_SESSION['id_user'];
+// Ambil id_customer dari session
+$id_customer = $_SESSION['id_customer'];
 
 // Query untuk mengambil data pemesanan customer
 $query = mysqli_query($connection, "
@@ -15,7 +15,7 @@ $query = mysqli_query($connection, "
         pk.nama_paket
     FROM pemesanan p
     JOIN paket pk ON p.id_paket = pk.id_paket
-    WHERE p.id_user = '$id_user'
+    WHERE p.id_customer = '$id_customer'
     ORDER BY p.tgl_pemesanan DESC
 ");
 

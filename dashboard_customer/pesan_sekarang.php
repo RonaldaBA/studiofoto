@@ -3,7 +3,7 @@ include "../helper/auth.php";
 include "../helper/connection.php";
 isLogin();
 
-$id_user = $_SESSION['id_user'];
+$id_customer = $_SESSION['id_customer'];
 
 // ===== CREATE =====
 if (isset($_POST['simpan'])) {
@@ -19,9 +19,9 @@ if (isset($_POST['simpan'])) {
 
     mysqli_query($connection, "
         INSERT INTO pemesanan 
-        (id_user, tgl_pemesanan, status_pemesanan, ringkasan_biaya, id_paket)
+        (id_customer, tgl_pemesanan, status_pemesanan, ringkasan_biaya, id_paket)
         VALUES
-        ('$id_user', '$tgl_jam', 'Proses', 0, '$paket')
+        ('$id_customer', '$tgl_jam', 'Proses', 0, '$paket')
     ");
 
     header("Location: pesan_sekarang.php");
@@ -33,7 +33,7 @@ $data = mysqli_query($connection, "
     SELECT p.*, pk.nama_paket
     FROM pemesanan p
     JOIN paket pk ON p.id_paket = pk.id_paket
-    WHERE p.id_user = '$id_user'
+    WHERE p.id_customer = '$id_customer'
     ORDER BY p.id_pemesanan DESC
 ");
 ?>

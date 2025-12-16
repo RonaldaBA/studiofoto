@@ -23,7 +23,7 @@ if ($userId === null) {
 $query = "SELECT p.*, pk.nama_paket, pk.deskripsi 
           FROM pemesanan p 
           JOIN paket pk ON p.id_paket = pk.id_paket 
-          WHERE p.id_user = ? 
+          WHERE p.id_customer = ? 
           AND p.status_pemesanan = 'Selesai'
           ORDER BY p.tgl_pemesanan DESC";
 

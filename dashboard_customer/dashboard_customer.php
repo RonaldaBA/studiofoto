@@ -3,27 +3,27 @@ include "../helper/auth.php";
 include "../helper/connection.php";
 isLogin();
 
-$id_user = $_SESSION['id_user'];
+$id_customer = $_SESSION['id_customer'];
 $nama    = $_SESSION['nama'];
 
 /* ===== RINGKASAN ===== */
 $totalPesanan = mysqli_fetch_assoc(
-    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_user='$id_user'")
+    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_customer='$id_customer'")
 )['total'];
 
 $dalamProses = mysqli_fetch_assoc(
-    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_user='$id_user' AND status_pemesanan='Proses'")
+    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_customer='$id_customer' AND status_pemesanan='Proses'")
 )['total'];
 
 $selesai = mysqli_fetch_assoc(
-    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_user='$id_user' AND status_pemesanan='Selesai'")
+    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_customer='$id_customer' AND status_pemesanan='Selesai'")
 )['total'];
 
 $terakhir = mysqli_fetch_assoc(
     mysqli_query($connection, "
         SELECT tgl_pemesanan 
         FROM pemesanan 
-        WHERE id_user='$id_user'
+        WHERE id_customer='$id_customer'
         ORDER BY tgl_pemesanan DESC
         LIMIT 1
     ")
@@ -34,7 +34,7 @@ $pesananTerakhir = mysqli_query($connection, "
     SELECT p.tgl_pemesanan, pk.nama_paket, p.status_pemesanan
     FROM pemesanan p
     JOIN paket pk ON p.id_paket = pk.id_paket
-    WHERE p.id_user='$id_user'
+    WHERE p.id_customer='$id_customer'
     ORDER BY p.tgl_pemesanan DESC
     LIMIT 3
 ");
