@@ -173,8 +173,8 @@ $result = $stmt->get_result();
                         <h6>RichArt Studio</h6>
                         <?php if (!empty($row['upload_date'])): ?>
                         <?php
-                            if (!empty($terakhir['tgl_pemesanan'])) {
-                                $tanggal = strtotime($terakhir['tgl_pemesanan']);
+                            if (!empty($row['tgl_pemesanan'])) {
+                                $tanggal = strtotime($row['tgl_pemesanan']);
                                 $hari = date('d', $tanggal);
                                 $bulanIndo = $bulan[(int)date('m', $tanggal)];
                                 $tahun = date('Y', $tanggal);
@@ -184,8 +184,8 @@ $result = $stmt->get_result();
                                 $tahun = '-';
                             }
 
-                            if (!empty($terakhir['tgl_pemesanan'])) {
-                                $tanggalupload = strtotime($terakhir['tgl_pemesanan']);
+                            if (!empty($row['tgl_pemesanan'])) {
+                                $tanggalupload = strtotime($row['tgl_pemesanan']);
                                 $hariupload = date('d', $tanggalupload);
                                 $bulanIndoupload = $bulan[(int)date('m', $tanggalupload)];
                                 $tahunupload = date('Y', $tanggalupload);
@@ -217,12 +217,36 @@ $result = $stmt->get_result();
                             <div class="modal-body text-center">
                                 <img src="<?= htmlspecialchars($photoUrl) ?>" alt="Hasil Foto">
                                 <p class="gallery-date mt-2">
+                                <h6>RichArt Studio</h6>
                                 <?php if (!empty($row['upload_date'])): ?>
-                                    Dipesan pada <?= date('d M Y', strtotime($row['tgl_pemesanan'])) ?><br>
-                                    Diunggah pada <?= date('d M Y', strtotime($row['upload_date'])) ?>
+                                <?php
+                                    if (!empty($row['tgl_pemesanan'])) {
+                                        $tanggal = strtotime($row['tgl_pemesanan']);
+                                        $hari = date('d', $tanggal);
+                                        $bulanIndo = $bulan[(int)date('m', $tanggal)];
+                                        $tahun = date('Y', $tanggal);
+                                    } else {
+                                        $hari = '-';
+                                        $bulanIndo = '-';
+                                        $tahun = '-';
+                                    }
+
+                                    if (!empty($row['tgl_pemesanan'])) {
+                                        $tanggalupload = strtotime($row['tgl_pemesanan']);
+                                        $hariupload = date('d', $tanggalupload);
+                                        $bulanIndoupload = $bulan[(int)date('m', $tanggalupload)];
+                                        $tahunupload = date('Y', $tanggalupload);
+                                    } else {
+                                        $hari = '-';
+                                        $bulanIndo = '-';
+                                        $tahun = '-';
+                                    }
+                                ?>
+                                    Dipesan pada <?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?><br>
+                                    <!-- Diunggah pada <?= $hariupload . ' ' . $bulanIndoupload . ' ' . $tahunupload ?> -->
                                 <?php else: ?>
-                                    Dipesan pada <?= date('d M Y', strtotime($row['tgl_pemesanan'])) ?><br>
-                                    Diunggah pada -
+                                    Dipesan pada <?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?><br>
+                                    <!-- Foto masih dalam proses -->
                                 <?php endif; ?>
                                 </p>
                                 <a href="<?= htmlspecialchars($photoUrl) ?>" download class="btn-download">

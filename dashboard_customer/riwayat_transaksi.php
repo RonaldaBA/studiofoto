@@ -159,8 +159,8 @@ if (!$query) {
                         <tr>
                             <td><?= $no++; ?></td>
                             <?php
-                            if (!empty($terakhir['tgl_pemesanan'])) {
-                                $tanggal = strtotime($terakhir['tgl_pemesanan']);
+                            if (!empty($row['tgl_pemesanan'])) {
+                                $tanggal = strtotime($row['tgl_pemesanan']);
                                 $hari = date('d', $tanggal);
                                 $bulanIndo = $bulan[(int)date('m', $tanggal)];
                                 $tahun = date('Y', $tanggal);
