@@ -10,7 +10,6 @@ $bulan = [
     'Mei', 'Juni', 'Juli', 'Agustus',
     'September', 'Oktober', 'November', 'Desember'
 ];
->>>>>>> 67c8af8195d127f52f906b124f579e184676137e
 
 // Query untuk mengambil data pemesanan customer
 $query = mysqli_query($connection, "
