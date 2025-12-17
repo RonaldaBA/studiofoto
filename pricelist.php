@@ -119,6 +119,7 @@ session_start();
 
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <img src="assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:40px; margin-right:10px;">
   <a class="navbar-brand" href="home.php">RichArt Studio</a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">

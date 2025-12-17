@@ -6,12 +6,11 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
   <aside id="sidebar-wrapper">
     <div class="sidebar-brand">
       <a href="index.php">
-        <!-- <img src="../assets/img/logo.png" alt="logo" width="150"> -->
-        <h3>RichArt Studio</h3>
+        <img src="../assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:50px;">
       </a>
     </div>
     <div class="sidebar-brand sidebar-brand-sm">
-      <a href="index.php">Art</a>
+      <a href="index.php">R-Art</a>
     </div>
     <ul class="sidebar-menu">
       <!-- coba -->

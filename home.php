@@ -119,7 +119,8 @@ session_start();
 
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-  <a class="navbar-brand" href="home.php">RichArt Studio</a>
+    <img src="assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:40px; margin-right:10px;">
+    <a class="navbar-brand" href="home.php">RichArt Studio</a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
     <span class="navbar-toggler-icon"></span>
@@ -140,13 +141,13 @@ session_start();
       <?php if(isset($_SESSION['login'])): ?>
         <li class="nav-item ml-lg-3">
           <a class="btn btn-success rounded-pill px-4" href="signup.php">
-            Sign Up
+             Dashboard
           </a>
         </li>
       <?php else: ?>
         <li class="nav-item ml-lg-3">
           <a class="btn btn-success rounded-pill px-4" href="login.php">
-            Sign In
+            Daftar
           </a>
         </li>
       <?php endif; ?>

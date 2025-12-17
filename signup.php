@@ -3,27 +3,26 @@ require_once 'helper/connection.php';
 session_start();
 
 if (isset($_SESSION['login'])) {
-    header('Location: dashboard/index.php');
+    header('Location: dashboard_customer/dashboard_customer.php');
     exit;
 }
 
 if (isset($_POST['submit'])) {
-    $username = mysqli_real_escape_string($connection, $_POST['username']);
+    $nama = mysqli_real_escape_string($connection, $_POST['nama']);
     $password = mysqli_real_escape_string($connection, $_POST['password']);
+    $email = mysqli_real_escape_string($connection, $_POST['email']);    
+    $nohp = mysqli_real_escape_string($connection, $_POST['nohp']);
     $confirm  = mysqli_real_escape_string($connection, $_POST['confirm']);
 
     if ($password !== $confirm) {
         $error = "Konfirmasi kata sandi tidak sesuai!";
     } else {
-        // cek username
-        $cek = mysqli_query($connection, "SELECT id FROM user WHERE username='$username'");
+        $cek = mysqli_query($connection, "SELECT id_customer FROM customer WHERE nama='$nama'");
         if (mysqli_num_rows($cek) > 0) {
             $error = "Username sudah digunakan!";
         } else {
-            // simpan user (plain password agar konsisten dengan login kamu)
-            $role = "customer";
-            $query = "INSERT INTO user (username, password, role) 
-                      VALUES ('$username', '$password', '$role')";
+            $query = "INSERT INTO customer (nama, email, password, no_hp) 
+                      VALUES ('$nama', '$email', '$password', '$nohp')";
             mysqli_query($connection, $query);
 
             $success = true;
@@ -99,7 +98,17 @@ if (isset($_POST['submit'])) {
   <form method="POST">
     <div class="form-group">
       <label>Username</label>
-      <input type="text" name="username" class="form-control" required autofocus>
+      <input type="text" name="nama" class="form-control" required autofocus>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="text" name="email" class="form-control" required autofocus>
+    </div>
+
+    <div class="form-group">
+      <label>Nomor HP</label>
+      <input type="text" name="nohp" class="form-control" required autofocus>
     </div>
 
     <div class="form-group">

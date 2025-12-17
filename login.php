@@ -3,7 +3,7 @@ require_once __DIR__ . '/helper/connection.php';
 session_start();
 
 if (isset($_POST['submit'])) {
-    $input    = $_POST['username']; // NAMA untuk customer
+    $input    = $_POST['username'];
     $password = $_POST['password'];
 
     /**
@@ -42,7 +42,6 @@ if (isset($_POST['submit'])) {
 
     if ($customer && $password === $customer['password']) {
         $_SESSION['login']   = true;
-        $_SESSION['role']    = 'customer';
         $_SESSION['id_customer'] = $customer['id_customer'];
         $_SESSION['nama']    = $customer['nama'];
 
@@ -82,8 +81,7 @@ if (isset($_POST['submit'])) {
         <div class="row">
           <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
             <div class="login-brand">
-              <!-- <img src="assets/img/logo.png" alt="logo" width="300"> -->
-               <h2>RichArt Studio</h2>
+                <img src="assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:150px;">
             </div>
 
             <div class="card card-primary">
