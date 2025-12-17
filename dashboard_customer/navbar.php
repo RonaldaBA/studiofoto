@@ -14,7 +14,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 .navbar-container {
     width: 100%;
     padding: 18px 40px;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -31,25 +30,32 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
 }
 
+/* PERBAIKAN: Set min-width dan text-align center agar tidak bergerak */
 .nav-right .nav-link {
     color: #6b7280;
-    font-weight: 600;
-    padding: 6px 0;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 6px 12px;
     transition: color 0.2s ease;
     white-space: nowrap;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    /* PENTING: Set min-width sesuai text terpanjang */
+    min-width: fit-content;
 }
 
+/* Hover - HANYA ubah warna */
 .nav-right .nav-link:hover {
     color: #111827;
 }
 
-/* ACTIVE MENU - HANYA UBAH WARNA, FONT-WEIGHT TETAP SAMA */
+/* Active - HANYA ubah warna */
 .nav-right .nav-link.active {
     color: #111827;
-    font-weight: 600; /* SAMA dengan yang non-active */
 }
 
 /* MY ACCOUNT BUTTON */
@@ -61,10 +67,14 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     font-weight: 600;
     text-decoration: none;
     white-space: nowrap;
+    transition: background 0.2s ease;
+    display: inline-block;
 }
 
 .btn-account:hover {
     background: #16a34a;
+    color: #fff !important;
+    text-decoration: none;
 }
 
 /* RESPONSIVE */
@@ -74,7 +84,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     }
     
     .nav-right {
-        gap: 20px;
+        gap: 15px;
     }
 }
 
@@ -98,7 +108,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
     <!-- LEFT: BRAND - POJOK KIRI -->
     <a class="navbar-brand" href="../home.php">
-      RichArt Studio
+      <img src="../assets/img/richart_logo.jpg" 
+           alt="RichArt Studio"
+           style="height:40px;">
     </a>
 
     <!-- RIGHT: MENU - POJOK KANAN -->

@@ -1,12 +1,63 @@
 <?php
+
+
 include "../helper/auth.php";
 include "../helper/connection.php";
 isLogin();
 
 $id_customer = $_SESSION['id_customer'];
 
+/* ================================
+   AJAX CEK JAM (KALENDER JAM)
+   ================================ */
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'cek_jam') {
+
+    $tanggal  = $_GET['tanggal']; // YYYY-MM-DD
+    $id_paket = $_GET['paket'];
+
+    $jam_list = ['08:00','09:00','10:00','11:00','13:00','14:00','15:00','16:00'];
+
+    // info paket
+    $qPaket = mysqli_query($connection,"
+        SELECT butuh_fotografer, jumlah_fotografer
+        FROM paket WHERE id_paket='$id_paket'
+    ");
+    $paket = mysqli_fetch_assoc($qPaket);
+
+    $result = [];
+
+    // jika tidak butuh fotografer
+    if ($paket['butuh_fotografer'] === 'Tidak') {
+        foreach ($jam_list as $jam) $result[$jam] = true;
+        echo json_encode($result); exit;
+    }
+
+    // total fotografer
+    $qTotal = mysqli_query($connection,"SELECT COUNT(*) total FROM photographer");
+    $total = mysqli_fetch_assoc($qTotal)['total'];
+
+    foreach ($jam_list as $jam) {
+        $datetime = $tanggal.' '.$jam.':00';
+
+        $qBusy = mysqli_query($connection,"
+            SELECT COUNT(DISTINCT id_photographer) sibuk
+            FROM pemesanan
+            WHERE tgl_pemesanan='$datetime'
+            AND status_pemesanan IN ('Proses','Selesai')
+            AND id_photographer IS NOT NULL
+        ");
+
+        $sibuk = mysqli_fetch_assoc($qBusy)['sibuk'];
+        $result[$jam] = ($total - $sibuk) >= $paket['jumlah_fotografer'];
+    }
+
+    echo json_encode($result);
+    exit;
+}
+
 // ===== CREATE =====
 if (isset($_POST['simpan'])) {
+
     $nama       = $_POST['nama'];
     $no_wa      = $_POST['no_wa'];
     $email      = $_POST['email'];
@@ -15,40 +66,109 @@ if (isset($_POST['simpan'])) {
     $jam        = $_POST['jam'];
     $jumlah     = $_POST['jumlah_orang'];
 
-    // Filter only selected packages (qty > 0)
-    $selected_packages = array_filter($paket_data, function($qty) {
-        return $qty > 0;
-    });
+    // CEK METODE PEMBAYARAN
+    if (!isset($_POST['metode_pembayaran'])) {
+        $error = "Pilih metode pembayaran terlebih dahulu";
+    } else {
+        $metode_pembayaran = $_POST['metode_pembayaran'];
+    }
+
+    // FILTER PAKET
+    $selected_packages = array_filter($paket_data, fn($q) => $q > 0);
 
     if (empty($selected_packages)) {
         $error = "Pilih minimal 1 paket!";
-    } else {
-        $tgl_jam = $tanggal . ' ' . $jam;
-        
-        // Calculate total price
+    }
+
+    // LANJUT JIKA TIDAK ADA ERROR
+    if (!isset($error)) {
+
         $total = 0;
-        $paket_ids = [];
+        $butuh_fotografer = 'Tidak';
+        $id_paket = array_key_first($selected_packages); // AMBIL 1 PAKET
+
         foreach ($selected_packages as $pid => $qty) {
-            $q = mysqli_query($connection, "SELECT harga_paket FROM paket WHERE id_paket = '$pid'");
+            $q = mysqli_query($connection,"
+                SELECT harga_paket, butuh_fotografer 
+                FROM paket 
+                WHERE id_paket='$pid'
+            ");
             $row = mysqli_fetch_assoc($q);
-            $total += ($row['harga_paket'] * $qty);
-            $paket_ids[] = $pid;
+
+            $total += $row['harga_paket'] * $qty;
+            $butuh_fotografer = $row['butuh_fotografer'];
         }
 
-        // Insert main order
-        mysqli_query($connection, "
-            INSERT INTO pemesanan 
-            (id_customer, tgl_pemesanan, status_pemesanan, ringkasan_biaya, id_paket)
-            VALUES
-            ('$id_customer', '$tgl_jam', 'Proses', $total, '{$paket_ids[0]}')
-        ");
-        
-        $id_pemesanan = mysqli_insert_id($connection);
+        $tgl_jam = $tanggal . ' ' . $jam . ':00';
+        $id_photographer = NULL;
 
-        header("Location: pesan_sekarang.php?success=1");
-        exit;
+        // JIKA BUTUH FOTOGRAFER
+        if ($butuh_fotografer === 'Ya') {
+
+            $qTotal = mysqli_query($connection,"SELECT COUNT(*) total FROM photographer");
+            $totalFoto = mysqli_fetch_assoc($qTotal)['total'];
+
+            $qCek = mysqli_query($connection,"
+                SELECT COUNT(DISTINCT id_photographer) total
+                FROM pemesanan
+                WHERE tgl_pemesanan='$tgl_jam'
+                AND status_pemesanan IN ('Proses','Selesai')
+            ");
+
+            $terpakai = mysqli_fetch_assoc($qCek)['total'];
+
+            if ($terpakai >= $totalFoto) {
+                $error = "Jam sudah penuh, silakan pilih jam lain";
+            } else {
+                $qCari = mysqli_query($connection,"
+                    SELECT id_photographer FROM photographer
+                    WHERE id_photographer NOT IN (
+                        SELECT id_photographer FROM pemesanan
+                        WHERE tgl_pemesanan='$tgl_jam'
+                        AND status_pemesanan IN ('Proses','Selesai')
+                    )
+                    LIMIT 1
+                ");
+
+                if (mysqli_num_rows($qCari) == 0) {
+                    $error = "Fotografer tidak tersedia";
+                } else {
+                    $id_photographer = mysqli_fetch_assoc($qCari)['id_photographer'];
+                }
+            }
+        }
+
+        // INSERT
+        if (!isset($error)) {
+
+            mysqli_query($connection, "
+                INSERT INTO pemesanan (
+                    id_customer,
+                    tgl_pemesanan,
+                    status_pemesanan,
+                    ringkasan_biaya,
+                    id_paket,
+                    id_photographer,
+                    metode_pembayaran
+                ) VALUES (
+                    '$id_customer',
+                    '$tgl_jam',
+                    'Proses',
+                    '$total',
+                    '$id_paket',
+                    " . ($id_photographer ? "'$id_photographer'" : "NULL") . ",
+                    '$metode_pembayaran'
+                )
+            ");
+
+            $id_pemesanan = mysqli_insert_id($connection);
+            header("Location: struk_pembayaran.php?id=$id_pemesanan");
+            exit;
+        }
     }
 }
+
+
 
 // ===== READ =====
 $data = mysqli_query($connection, "
@@ -105,22 +225,6 @@ foreach ($category_order as $cat) {
     }
 }
 $paket_by_category = $sorted_categories;
-
-// GET BOOKED DATES - Group by date and count bookings
-$booked_query = mysqli_query($connection, "
-    SELECT DATE(tgl_pemesanan) as tanggal, COUNT(*) as total_booking
-    FROM pemesanan
-    WHERE status_pemesanan IN ('Proses', 'Selesai')
-    AND DATE(tgl_pemesanan) >= CURDATE()
-    GROUP BY DATE(tgl_pemesanan)
-    HAVING total_booking >= 3
-");
-
-$booked_dates = [];
-while ($b = mysqli_fetch_assoc($booked_query)) {
-    $booked_dates[] = $b['tanggal'];
-}
-$booked_dates_json = json_encode($booked_dates);
 ?>
 
 <!DOCTYPE html>
@@ -848,11 +952,37 @@ $booked_dates_json = json_encode($booked_dates);
                 </div>
             </div>
 
+            <!-- ===== METODE PEMBAYARAN ===== -->
+    <h5 class="section-title">
+        <i class="fas fa-credit-card"></i> Metode Pembayaran
+    </h5>
+
+    <div class="form-group">
+        <div class="custom-control custom-radio mb-2">
+            <input type="radio" id="payCash" name="metode_pembayaran" value="Cash" 
+                   class="custom-control-input" required>
+            <label class="custom-control-label" for="payCash">
+                💵 Bayar di Tempat (Cash)
+            </label>
+        </div>
+
+        <div class="custom-control custom-radio">
+            <input type="radio" id="payQris" name="metode_pembayaran" value="QRIS" 
+                   class="custom-control-input" required>
+            <label class="custom-control-label" for="payQris">
+                📱 QRIS (Scan Pembayaran)
+            </label>
+        </div>
+    </div>
+
             <button type="submit" name="simpan" class="btn btn-success px-5 btn-lg mt-3">
                 <i class="fas fa-check-circle"></i> Pesan Sekarang
             </button>
         </div>
 
+    
+
+        
     </form>
 
     <!-- ===== DATA PESANAN ===== -->
@@ -910,136 +1040,133 @@ $booked_dates_json = json_encode($booked_dates);
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 <script>
-// ===== CALENDAR FUNCTIONALITY =====
+const jamSelect = document.querySelector('select[name="jam"]');
+
+function loadJam() {
+    const tanggal = document.getElementById('tanggalInput').value;
+    const paket   = document.querySelector('input[name^="paket_qty"][value!="0"]');
+
+    if (!tanggal || !paket) return;
+
+    fetch(`pesan_sekarang.php?ajax=cek_jam&tanggal=${tanggal}&paket=${paket.id.replace('qty_','')}`)
+    .then(res => res.json())
+    .then(data => {
+        [...jamSelect.options].forEach(opt => {
+            if (!opt.value) return;
+            opt.disabled = !data[opt.value];
+        });
+    });
+}
+
+
+
+/* =========================
+   GLOBAL
+========================= */
 let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
+let currentYear  = new Date().getFullYear();
 let selectedDate = null;
 
-// Get booked dates from PHP
-const bookedDates = <?= $booked_dates_json ?>;
-
 const monthNames = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  'Januari','Februari','Maret','April','Mei','Juni',
+  'Juli','Agustus','September','Oktober','November','Desember'
 ];
+const dayNames = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
 
-const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+/* =========================
+   UTIL
+========================= */
+function formatDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth()+1).padStart(2,'0');
+  const d = String(date.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
 
+/* =========================
+   CALENDAR
+========================= */
 function renderCalendar() {
-    const monthYearEl = document.getElementById('monthYear');
-    const calendarGrid = document.getElementById('calendarGrid');
-    
-    monthYearEl.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-    
-    // Clear grid
-    calendarGrid.innerHTML = '';
-    
-    // Add day headers
-    dayNames.forEach(day => {
-        const dayHeader = document.createElement('div');
-        dayHeader.className = 'calendar-day-header';
-        dayHeader.textContent = day;
-        calendarGrid.appendChild(dayHeader);
-    });
-    
-    // Get first day of month and days in month
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    // Add empty cells for days before month starts
-    for (let i = 0; i < firstDay; i++) {
-        const emptyDay = document.createElement('div');
-        emptyDay.className = 'calendar-day empty';
-        calendarGrid.appendChild(emptyDay);
+  const monthYearEl = document.getElementById('monthYear');
+  const calendarGrid = document.getElementById('calendarGrid');
+
+  monthYearEl.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  calendarGrid.innerHTML = '';
+
+  // header hari
+  dayNames.forEach(d => {
+    const h = document.createElement('div');
+    h.className = 'calendar-day-header';
+    h.textContent = d;
+    calendarGrid.appendChild(h);
+  });
+
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth+1, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // padding awal
+  for (let i=0;i<firstDay;i++) {
+    const e = document.createElement('div');
+    e.className = 'calendar-day empty';
+    calendarGrid.appendChild(e);
+  }
+
+  // tanggal
+  for (let d=1; d<=daysInMonth; d++) {
+    const dateObj = new Date(currentYear,currentMonth,d);
+    const dateStr = formatDate(dateObj);
+
+    const el = document.createElement('div');
+    el.className = 'calendar-day';
+    el.textContent = d;
+
+    if (dateObj < today) {
+      el.classList.add('past');
+    } else {
+      el.classList.add('available');
+      el.onclick = () => selectDate(dateStr, el);
     }
-    
-    // Add days of month
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dateObj = new Date(currentYear, currentMonth, day);
-        const dateStr = formatDate(dateObj);
-        
-        const dayEl = document.createElement('div');
-        dayEl.className = 'calendar-day';
-        dayEl.textContent = day;
-        dayEl.dataset.date = dateStr;
-        
-        // Check if date is in the past
-        if (dateObj < today) {
-            dayEl.classList.add('past');
-        }
-        // Check if date is booked
-        else if (bookedDates.includes(dateStr)) {
-            dayEl.classList.add('booked');
-            dayEl.title = 'Tanggal sudah penuh';
-        }
-        // Available date
-        else {
-            dayEl.classList.add('available');
-            dayEl.onclick = () => selectDate(dateStr, dayEl);
-        }
-        
-        // Check if selected
-        if (selectedDate === dateStr) {
-            dayEl.classList.remove('available');
-            dayEl.classList.add('selected');
-        }
-        
-        calendarGrid.appendChild(dayEl);
+
+    if (selectedDate === dateStr) {
+      el.classList.add('selected');
     }
+
+    calendarGrid.appendChild(el);
+  }
 }
 
-function selectDate(dateStr, element) {
-    // Remove previous selection
-    document.querySelectorAll('.calendar-day.selected').forEach(el => {
-        el.classList.remove('selected');
-        el.classList.add('available');
-    });
-    
-    // Set new selection
-    element.classList.remove('available');
-    element.classList.add('selected');
-    selectedDate = dateStr;
-    
-    // Update hidden input
-    document.getElementById('tanggalInput').value = dateStr;
-    
-    // Show selected date
-    const displayEl = document.getElementById('selectedDateDisplay');
-    const dateObj = new Date(dateStr);
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = dateObj.toLocaleDateString('id-ID', options);
-    
-    displayEl.textContent = `📅 Tanggal dipilih: ${formattedDate}`;
-    displayEl.classList.add('active');
+function selectDate(dateStr, el) {
+  document.querySelectorAll('.calendar-day.selected').forEach(e=>{
+    e.classList.remove('selected');
+    e.classList.add('available');
+  });
+
+  el.classList.remove('available');
+  el.classList.add('selected');
+
+  selectedDate = dateStr;
+  document.getElementById('tanggalInput').value = dateStr;
+
+  loadJam(); // 🔥 INI KUNCI
 }
+
+
 
 function changeMonth(delta) {
-    currentMonth += delta;
-    
-    if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-    } else if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-    }
-    
-    renderCalendar();
+  currentMonth += delta;
+  if (currentMonth < 0) { currentMonth=11; currentYear--; }
+  if (currentMonth > 11){ currentMonth=0; currentYear++; }
+  renderCalendar();
 }
 
-function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-// Initialize calendar on page load
-document.addEventListener('DOMContentLoaded', function() {
-    renderCalendar();
+/* =========================
+   INIT
+========================= */
+document.addEventListener('DOMContentLoaded', () => {
+  renderCalendar();
 });
+
 
 // ===== PACKAGE SELECTION FUNCTIONS =====
 // Toggle category accordion
@@ -1073,6 +1200,7 @@ function changeQty(paketId, delta) {
 // Change quantity from summary
 function changeSummaryQty(paketId, delta) {
     changeQty(paketId, delta);
+    loadJam();
 }
 
 // Update summary
@@ -1138,10 +1266,6 @@ function clearAll() {
     updateSummary();
 }
 
-// Set minimum date
-const dateInput = document.querySelector('input[type="date"]');
-const today = new Date().toISOString().split('T')[0];
-dateInput.setAttribute('min', today);
 
 // Form validation
 document.getElementById('pesanForm').addEventListener('submit', function(e) {

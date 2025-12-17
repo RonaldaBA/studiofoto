@@ -1,23 +1,24 @@
 <?php
 include "../helper/auth.php";
 include "../helper/connection.php";
+isLogin();
 
-// Ambil id_customer dari session
 $id_customer = $_SESSION['id_customer'];
 
 $bulan = [
-    1 => 'Januari', 'Februari', 'Maret', 'April',
-    'Mei', 'Juni', 'Juli', 'Agustus',
-    'September', 'Oktober', 'November', 'Desember'
+    1 => 'Januari','Februari','Maret','April','Mei','Juni',
+    'Juli','Agustus','September','Oktober','November','Desember'
 ];
 
-// Query untuk mengambil data pemesanan customer
+// QUERY RIWAYAT TRANSAKSI (PAKAI created_at)
 $query = mysqli_query($connection, "
     SELECT 
         p.id_pemesanan,
-        p.tgl_pemesanan, 
-        p.status_pemesanan, 
-        p.ringkasan_biaya, 
+        p.tgl_pemesanan,
+        p.created_at,
+        p.status_pemesanan,
+        p.metode_pembayaran,
+        p.ringkasan_biaya,
         pk.nama_paket
     FROM pemesanan p
     JOIN paket pk ON p.id_paket = pk.id_paket
@@ -25,18 +26,16 @@ $query = mysqli_query($connection, "
     ORDER BY p.tgl_pemesanan DESC
 ");
 
-// Cek apakah query berhasil
 if (!$query) {
-    die("Query Error: " . mysqli_error($connection));
+    die("Query error: " . mysqli_error($connection));
 }
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Riwayat Transaksi - Richart Studio</title>
+    <title>Riwayat Transaksi</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
     <style>
@@ -44,78 +43,49 @@ if (!$query) {
             background: #f8fafc;
             font-family: Arial, sans-serif;
         }
-
         .page-title {
             font-weight: 700;
             color: #1f2937;
         }
-
         .badge-status {
             padding: 6px 14px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
         }
-
         .badge-selesai {
             background: #dcfce7;
             color: #166534;
         }
-
         .badge-proses {
             background: #fef3c7;
             color: #92400e;
         }
-
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
         .table {
             background: white;
         }
-
         .table thead {
             background: #f1f5f9;
         }
-
         .table thead th {
             border: none;
-            color: #64748b;
             font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 16px;
+            font-size: 13px;
+            color: #64748b;
+            padding: 14px;
         }
-
         .table tbody td {
-            padding: 16px;
+            padding: 14px;
             vertical-align: middle;
-            color: #374151;
             border-bottom: 1px solid #e5e7eb;
         }
-
-        .table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .table tbody tr:hover {
-            background: #f9fafb;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6b7280;
-        }
-
-        .empty-state svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-
-        .card {
-            border-radius: 12px;
-            overflow: hidden;
+        .btn-sm {
+            font-size: 13px;
+            padding: 6px 10px;
         }
     </style>
 </head>
@@ -125,79 +95,103 @@ if (!$query) {
 <?php include "navbar.php"; ?>
 
 <div class="container py-5">
-    <h2 class="page-title mb-4">Riwayat Transaksi</h2>
+    <h3 class="page-title mb-4">Riwayat Transaksi</h3>
 
-    <!-- TABLE -->
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <table class="table mb-0">
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Tanggal</th>
+                        <th>Tanggal Pemotretan</th>
                         <th>Paket</th>
-                        <th>Status</th>
-                        <th>Total Biaya</th>
+                        <th>Status Pesanan</th>
+                        <th>Status Pembayaran</th>
+                        <th>Total</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
 
-                <?php 
+                <?php
                 $no = 1;
-                if (mysqli_num_rows($query) > 0) {
-                    while ($row = mysqli_fetch_assoc($query)) {
-                        // Format tanggal Indonesia
-                        $tgl = date('d M Y', strtotime($row['tgl_pemesanan']));
-                        
-                        // Format harga
-                        $harga = number_format($row['ringkasan_biaya'], 0, ',', '.');
-                        
-                        // Badge status
-                        $status = $row['status_pemesanan'];
-                        $badgeClass = ($status == 'Selesai') ? 'badge-selesai' : 'badge-proses';
-                        ?>
-                        <tr>
-                            <td><?= $no++; ?></td>
-                            <?php
-                            if (!empty($row['tgl_pemesanan'])) {
-                                $tanggal = strtotime($row['tgl_pemesanan']);
-                                $hari = date('d', $tanggal);
-                                $bulanIndo = $bulan[(int)date('m', $tanggal)];
-                                $tahun = date('Y', $tanggal);
+                if (mysqli_num_rows($query) > 0):
+                    while ($row = mysqli_fetch_assoc($query)):
+
+                        // === FORMAT TANGGAL ===
+                        $tgl = strtotime($row['tgl_pemesanan']);
+                        $hari = date('d', $tgl);
+                        $bulanIndo = $bulan[(int)date('m', $tgl)];
+                        $tahun = date('Y', $tgl);
+
+                        // === STATUS PESANAN ===
+                        if ($row['status_pemesanan'] === 'Selesai') {
+                            $badgePesanan = 'badge-selesai';
+                        } else {
+                            $badgePesanan = 'badge-proses';
+                        }
+
+                        // === STATUS PEMBAYARAN ===
+                        $now = time();
+                        if ($row['metode_pembayaran'] === 'Cash') {
+
+                            $statusBayar = 'Bayar di Tempat';
+                            $badgeBayar  = 'badge-secondary';
+
+                        } elseif ($row['metode_pembayaran'] === 'QRIS') {
+
+                            if (!empty($row['created_at'])) {
+                                $expired = strtotime($row['created_at']) + 86400;
                             } else {
-                                $hari = '-';
-                                $bulanIndo = '-';
-                                $tahun = '-';
+                                $expired = 0;
                             }
-                            ?>
-                            <td><?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?></td>
-                            <td><?= htmlspecialchars($row['nama_paket']); ?></td>
-                            <td>
-                                <span class="badge badge-status <?= $badgeClass; ?>">
-                                    <?= htmlspecialchars($status); ?>
-                                </span>
-                            </td>
-                            <td>Rp <?= $harga; ?></td>
-                        </tr>
-                        <?php
-                    }
-                } else {
-                    // Jika tidak ada data
-                    ?>
+
+                            if (time() <= $expired) {
+                                $statusBayar = 'Menunggu Pembayaran';
+                                $badgeBayar  = 'badge-warning';
+                            } else {
+                                $statusBayar = 'QRIS Expired';
+                                $badgeBayar  = 'badge-danger';
+                            }
+
+                        } else {
+                            $statusBayar = 'Tidak Diketahui';
+                            $badgeBayar  = 'badge-secondary';
+                        }
+
+                ?>
                     <tr>
-                        <td colspan="5">
-                            <div class="empty-state">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <h5>Belum Ada Transaksi</h5>
-                                <p class="mb-0 text-muted">Anda belum melakukan pemesanan</p>
-                            </div>
+                        <td><?= $no++; ?></td>
+                        <td><?= "$hari $bulanIndo $tahun"; ?></td>
+                        <td><?= htmlspecialchars($row['nama_paket']); ?></td>
+                        <td>
+                            <span class="badge badge-status <?= $badgePesanan ?>">
+                                <?= $row['status_pemesanan']; ?>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge badge-status <?= $badgeBayar ?>">
+                                <?= $statusBayar; ?>
+                            </span>
+                        </td>
+                        <td>Rp <?= number_format($row['ringkasan_biaya'],0,',','.'); ?></td>
+                        <td>
+                            <a href="struk_pembayaran.php?id=<?= $row['id_pemesanan']; ?>"
+                               class="btn btn-success btn-sm">
+                                Lihat Struk
+                            </a>
                         </td>
                     </tr>
-                    <?php
-                }
+                <?php
+                    endwhile;
+                else:
                 ?>
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            Belum ada transaksi
+                        </td>
+                    </tr>
+                <?php endif; ?>
 
                 </tbody>
             </table>
