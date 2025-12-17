@@ -31,8 +31,9 @@ require_once '../helper/connection.php';
                 <td>
                   <select class="form-control" name="status_pemesanan" required>
                     <option value="" disabled selected>Pilih status</option>
-                    <option value="Belum Selesai">Belum Selesai</option>
-                    <option value="Selesai">Selesai</option>
+                    <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
+                    <option value="Pemesanan Aktif">Pemesanan Aktif</option>                    
+                    <option value="Pemesanan Selesai">Pemesanan Selesai</option>
                   </select>
                 </td>
               </tr>
@@ -44,7 +45,7 @@ require_once '../helper/connection.php';
               
               <tr>
                 <td>ID Customer</td>
-                <td><input class="form-control" type="number" name="id_user" size="20" required></td>
+                <td><input class="form-control" type="number" name="id_customer" size="20" required></td>
               </tr>
 
               <tr>

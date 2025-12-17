@@ -2,9 +2,9 @@
 session_start();
 require_once '../helper/connection.php';
 
-$id_customer = $_GET['id_customer'];
+$id = $_GET['id_photo'];
 
-$result = mysqli_query($connection, "DELETE FROM customer WHERE id_customer='$id_customer'");
+$result = mysqli_query($connection, "DELETE FROM gallery WHERE id_photo='$id'");
 
 if (mysqli_affected_rows($connection) > 0) {
   $_SESSION['info'] = [

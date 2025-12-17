@@ -2,8 +2,8 @@
 require_once '../layout/_top.php';
 require_once '../helper/connection.php';
 
-$id_user = $_GET['id_user'];
-$query = mysqli_query($connection, "SELECT * FROM customer WHERE id_user='$id_user'");
+$id_customer = $_GET['id_customer'];
+$query = mysqli_query($connection, "SELECT * FROM customer WHERE id_customer='$id_customer'");
 ?>
 
 <section class="section">
@@ -20,11 +20,11 @@ $query = mysqli_query($connection, "SELECT * FROM customer WHERE id_user='$id_us
             <?php
             while ($row = mysqli_fetch_array($query)) {
             ?>
-              <input type="hidden" name="id_user" value="<?= $row['id_user'] ?>">
+              <input type="hidden" name="id_customer" value="<?= $row['id_customer'] ?>">
               <table cellpadding="8" class="w-100">
                 <tr>
                   <td>ID Customer</td>
-                  <td><input class="form-control" type="number" name="id_user" size="20" required value="<?= $row['id_user'] ?>" disabled></td>
+                  <td><input class="form-control" type="number" name="id_customer" size="20" required value="<?= $row['id_customer'] ?>" disabled></td>
                 </tr>
                 <tr>
                   <td>Nama Customer</td>

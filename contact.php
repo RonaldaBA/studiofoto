@@ -5,7 +5,7 @@ session_start();
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Contact | RichArt Studio</title>
+  <title>Kontak | RichArt Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap -->
@@ -101,6 +101,7 @@ session_start();
 
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <img src="assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:40px; margin-right:10px;">
   <a class="navbar-brand" href="home.php">RichArt Studio</a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
@@ -109,19 +110,27 @@ session_start();
 
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
-      <li class="nav-item"><a class="nav-link" href="pricelist.php">Pricelist</a></li>
       <li class="nav-item">
-        <a class="nav-link active font-weight-bold" href="contact.php">Contact</a>
+        <a class="nav-link" href="home.php">Beranda</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="pricelist.php">Daftar Harga</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active font-weight-bold" href="contact.php">Kontak</a>
       </li>
 
       <?php if(isset($_SESSION['login'])): ?>
         <li class="nav-item ml-lg-3">
-          <a class="btn btn-success rounded-pill px-4" href="signup.php">Sign Up</a>
+          <a class="btn btn-success rounded-pill px-4" href="signup.php">
+             Dashboard
+          </a>
         </li>
       <?php else: ?>
         <li class="nav-item ml-lg-3">
-          <a class="btn btn-success rounded-pill px-4" href="login.php">Sign In</a>
+          <a class="btn btn-success rounded-pill px-4" href="login.php">
+            Daftar
+          </a>
         </li>
       <?php endif; ?>
     </ul>
@@ -130,7 +139,7 @@ session_start();
 
 <!-- ===== HEADER ===== -->
 <div class="page-header">
-  <h1>Contact Us</h1>
+  <h1>Kontak Kami</h1>
   <p>Hubungi kami untuk informasi & pemesanan studio</p>
 </div>
 
@@ -145,7 +154,7 @@ session_start();
 
         <div class="contact-item">
           <span>📍</span>
-          <div>Jl. Contoh Alamat No. 123, Kota Anda</div>
+          <div>Jl. Panembahan Senopati No.214, Ngaliyan, Kec. Ngaliyan, Kota Semarang, Jawa Tengah 50181</div>
         </div>
 
         <div class="contact-item">
@@ -155,7 +164,7 @@ session_start();
 
         <div class="contact-item">
           <span>📞</span>
-          <div>+62 812-3456-7890</div>
+          <div>+62 851-5982-2523</div>
         </div>
 
         <div class="contact-item">
@@ -164,7 +173,7 @@ session_start();
         </div>
 
         <div class="cta-btn mt-4">
-          <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-success">
+          <a href="https://wa.me/6285159822523" target="_blank" class="btn btn-success">
             Chat WhatsApp
           </a>
           <a href="login.php" class="btn btn-outline-success">
@@ -177,11 +186,14 @@ session_start();
     <!-- MAP -->
     <div class="col-md-7 mb-4">
       <div class="map-wrapper">
-        <!-- GANTI embed MAP sesuai lokasi studio -->
-        <iframe 
-          src="https://www.google.com/maps?q=Jakarta&output=embed"
-          loading="lazy">
-        </iframe>
+      <iframe
+        src="https://www.google.com/maps?q=-6.997141281983134, 110.34987055016498&z=15&output=embed"
+        width="100%"
+        height="300"
+        style="border:0;"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
       </div>
     </div>
 

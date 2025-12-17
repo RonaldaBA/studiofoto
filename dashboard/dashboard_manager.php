@@ -2,6 +2,11 @@
 require_once '../layout/_top.php';
 require_once '../helper/connection.php';
 
+if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'manajer') {
+    header("Location: login.php");
+    exit;
+}
+
 $customer = mysqli_query($connection, "SELECT COUNT(*) FROM customer");
 $cs = mysqli_query($connection, "SELECT COUNT(*) FROM customer_service");
 $user = mysqli_query($connection, "SELECT COUNT(*) FROM user");

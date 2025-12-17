@@ -5,7 +5,7 @@ session_start();
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Pricelist | RichArt Studio</title>
+  <title>Daftar Harga | RichArt Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap -->
@@ -119,6 +119,7 @@ session_start();
 
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <img src="assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:40px; margin-right:10px;">
   <a class="navbar-brand" href="home.php">RichArt Studio</a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
@@ -127,17 +128,27 @@ session_start();
 
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
-      <li class="nav-item"><a class="nav-link active font-weight-bold" href="pricelist.php">Pricelist</a></li>
-      <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
+      <li class="nav-item">
+        <a class="nav-link" href="home.php">Beranda</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active font-weight-bold" href="pricelist.php">Daftar Harga</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="contact.php">Kontak</a>
+      </li>
 
       <?php if(isset($_SESSION['login'])): ?>
         <li class="nav-item ml-lg-3">
-          <a class="btn btn-success rounded-pill px-4" href="signup.php">Sign Up</a>
+          <a class="btn btn-success rounded-pill px-4" href="signup.php">
+             Dashboard
+          </a>
         </li>
       <?php else: ?>
         <li class="nav-item ml-lg-3">
-          <a class="btn btn-success rounded-pill px-4" href="login.php">Sign In</a>
+          <a class="btn btn-success rounded-pill px-4" href="login.php">
+            Daftar
+          </a>
         </li>
       <?php endif; ?>
     </ul>
@@ -146,7 +157,7 @@ session_start();
 
 <!-- ===== HEADER ===== -->
 <div class="page-header">
-  <h1>Pricelist</h1>
+  <h1>Daftar Harga</h1>
   <p>Pilih paket photo studio sesuai kebutuhanmu</p>
 </div>
 

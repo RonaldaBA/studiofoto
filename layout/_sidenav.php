@@ -5,13 +5,10 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
 <div class="main-sidebar sidebar-style-2">
   <aside id="sidebar-wrapper">
     <div class="sidebar-brand">
-      <a href="index.php">
-        <!-- <img src="../assets/img/logo.png" alt="logo" width="150"> -->
-        <h3>RichArt Studio</h3>
-      </a>
+      <img src="../assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:50px;">
     </div>
     <div class="sidebar-brand sidebar-brand-sm">
-      <a href="index.php">Art</a>
+      <a href="index.php">R-Art</a>
     </div>
     <ul class="sidebar-menu">
       <!-- coba -->
@@ -143,7 +140,16 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
         </a>
         <ul class="dropdown-menu">
           <li><a class="nav-link" href="../package/index.php">Daftar Paket</a></li>
-          <li><a class="nav-link" href="../package/create.php">Tambah Data</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
+          <i class="fas fa-book"></i> <span>Galeri</span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a class="nav-link" href="../gallery/index.php">Daftar Galeri</a></li>
+          <li><a class="nav-link" href="../gallery/create.php">Tambah Foto</a></li>
         </ul>
       </li>
 

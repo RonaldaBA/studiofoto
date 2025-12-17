@@ -2,6 +2,11 @@
 require_once '../layout/_top.php';
 require_once '../helper/connection.php';
 
+if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'fotografer') {
+    header("Location: login.php");
+    exit;
+}
+
 $customer = mysqli_query($connection, "SELECT COUNT(*) FROM customer");
 $package = mysqli_query($connection, "SELECT COUNT(*) FROM paket");
 $order = mysqli_query($connection, "SELECT COUNT(*) FROM pemesanan");

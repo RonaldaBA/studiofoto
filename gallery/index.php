@@ -2,17 +2,13 @@
 require_once '../layout/_top.php';
 require_once '../helper/connection.php';
 
-$result = mysqli_query($connection, "SELECT * FROM paket");
+$result = mysqli_query($connection, "SELECT * FROM gallery");
 ?>
 
 <section class="section">
   <div class="section-header d-flex justify-content-between">
-    <h1>Daftar Paket</h1>
-    <?php if ($_SESSION['role'] == 'fotografer') : ?>
-      <!-- Tidak ada Tombol -->
-    <?php else: ?>
-      <a href="./create.php" class="btn btn-primary"><i class="fas fa-plus-square mr-2"></i>Tambah Data</a>
-    <?php endif ?>
+    <h1>Daftar Galeri</h1>
+    <a href="./create.php" class="btn btn-primary"><i class="fas fa-plus-square mr-2"></i>Tambah Data</a>
   </div>
   <div class="row">
     <div class="col-12">
@@ -22,10 +18,11 @@ $result = mysqli_query($connection, "SELECT * FROM paket");
             <table class="table table-hover table-striped w-100" id="table-1">
               <thead>
                 <tr>
-                  <th>ID Paket</th>
-                  <th>Nama</th>
-                  <th>Deskripsi</th>
-                  <th>Harga</th>
+                  <th>ID Foto</th>
+                  <th>ID Customer</th>
+                  <th>ID Pemesanan</th>
+                  <th>Foto</th>
+                  <th>Tanggal Upload</th>
                   <th style="width: 150">Aksi</th>
                 </tr>
               </thead>
@@ -35,25 +32,17 @@ $result = mysqli_query($connection, "SELECT * FROM paket");
                 ?>
 
                   <tr>
-                    <td><?= $data['id_paket'] ?></td>
-                    <td><?= $data['nama_paket'] ?></td>
-                    <td><?= $data['deskripsi'] ?></td>
-                    <td>Rp. <?= number_format($data['harga_paket'], 0, ',', '.') ?></td>
+                    <td><?= $data['id_photo'] ?></td>
+                    <td><?= $data['id_customer'] ?></td>
+                    <td><?= $data['id_pemesanan'] ?></td>
+                    <td><img src="../assets/img/data/<?php echo htmlspecialchars($data['file_name']); ?>" class="img-fluid" alt="<?php echo htmlspecialchars($data['file_name']); ?>" style="max-width: 50px;">
+                    <td><?= $data['upload_date'] ?></td>
                     <td>
-                      <?php
-                      $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
-                      ?>
-                      <?php if ($role == 'fotografer') : ?>
-                        <!-- Tidak ada Tombol -->
-                      <?php else: ?>
-                      <a class="btn btn-sm btn-danger mb-md-0 mb-1" href="delete.php?id_paket=<?= $data['id_paket'] ?>">
+                      <a class="btn btn-sm btn-danger mb-md-0 mb-1" href="delete.php?id_photo=<?= $data['id_photo'] ?>">
                         <i class="fas fa-trash fa-fw"></i>
-                      <?php endif ?>
-                      </a>
-                      <a class="btn btn-sm btn-info" href="edit.php?id_paket=<?= $data['id_paket'] ?>">
-                        <i class="fas fa-edit fa-fw"></i>
                       </a>
                     </td>
+                  </tr>
                   </tr>
 
                 <?php
