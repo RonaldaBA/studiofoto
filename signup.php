@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Sign Up | RichArt Studio</title>
+  <title>Daftar | RichArt Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap -->
@@ -128,7 +128,7 @@ if (isset($_POST['submit'])) {
 
   <div class="text-center mt-4">
     Sudah punya akun?
-    <a href="login.php" class="font-weight-bold">Sign In</a>
+    <a href="login.php" class="font-weight-bold">Masuk</a>
   </div>
 
   <?php endif; ?>

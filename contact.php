@@ -5,7 +5,7 @@ session_start();
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Contact | RichArt Studio</title>
+  <title>Kontak | RichArt Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap -->
@@ -110,19 +110,27 @@ session_start();
 
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
-      <li class="nav-item"><a class="nav-link" href="pricelist.php">Pricelist</a></li>
       <li class="nav-item">
-        <a class="nav-link active font-weight-bold" href="contact.php">Contact</a>
+        <a class="nav-link active font-weight-bold" href="home.php">Beranda</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="pricelist.php">Daftar Harga</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="contact.php">Kontak</a>
       </li>
 
       <?php if(isset($_SESSION['login'])): ?>
         <li class="nav-item ml-lg-3">
-          <a class="btn btn-success rounded-pill px-4" href="signup.php">Sign Up</a>
+          <a class="btn btn-success rounded-pill px-4" href="signup.php">
+             Dashboard
+          </a>
         </li>
       <?php else: ?>
         <li class="nav-item ml-lg-3">
-          <a class="btn btn-success rounded-pill px-4" href="login.php">Sign In</a>
+          <a class="btn btn-success rounded-pill px-4" href="login.php">
+            Daftar
+          </a>
         </li>
       <?php endif; ?>
     </ul>
@@ -131,7 +139,7 @@ session_start();
 
 <!-- ===== HEADER ===== -->
 <div class="page-header">
-  <h1>Contact Us</h1>
+  <h1>Kontak Kami</h1>
   <p>Hubungi kami untuk informasi & pemesanan studio</p>
 </div>
 
