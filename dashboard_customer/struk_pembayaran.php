@@ -180,13 +180,21 @@ if (
 <?php if ($data['metode_pembayaran'] === 'QRIS'): ?>
 
     <?php if ($data['status_pemesanan'] === 'Menunggu Pembayaran'): ?>
-        <div class="qris-box">
-            <h6>⏳ Selesaikan Pembayaran Dalam</h6>
-            <h4 id="countdown" style="color:red;"></h4>
+    <div class="qris-box">
+        <h6>⏳ Selesaikan Pembayaran Dalam</h6>
+        <h4 id="countdown" style="color:red;"></h4>
 
-            <p>Scan QRIS di bawah ini:</p>
-            <img src="../assets/img/Qris.jpeg" alt="QRIS">
+        <p>Scan QRIS di bawah ini:</p>
+        <img src="../assets/img/Qris.jpeg" alt="QRIS">
+
+        <div class="alert alert-warning mt-4">
+            <strong>📌 Penting!</strong><br>
+            Setelah melakukan pembayaran, <b>harap kirim bukti pembayaran</b> ke Customer Service melalui WhatsApp agar pembayaran dapat dikonfirmasi dan pesanan diproses.
         </div>
+
+        
+    </div>
+
 
     <?php elseif (
         $data['status_pemesanan'] === 'Pemesanan Aktif'
@@ -212,9 +220,18 @@ if (
 
 
 
-<a href="riwayat_transaksi.php" class="btn btn-success btn-back">
-    Kembali
-</a>
+<div class="mt-4">
+    <a href="https://wa.me/6285159822523"
+       target="_blank"
+       class="btn btn-success btn-block mb-2">
+        💬 Chat WhatsApp Customer Service
+    </a>
+
+    <a href="riwayat_transaksi.php"
+       class="btn btn-outline-secondary btn-block">
+        ⬅️ Kembali ke Riwayat Transaksi
+    </a>
+</div>
 
 </div>
 </div>
