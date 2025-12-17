@@ -97,7 +97,7 @@ if (isset($_POST['submit'])) {
 
   <form method="POST">
     <div class="form-group">
-      <label>Username</label>
+      <label>Nama Pengguna</label>
       <input type="text" name="nama" class="form-control" required autofocus>
     </div>
 
