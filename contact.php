@@ -154,7 +154,7 @@ session_start();
 
         <div class="contact-item">
           <span>📍</span>
-          <div>Jl. Contoh Alamat No. 123, Kota Anda</div>
+          <div>Jl. Panembahan Senopati No.214, Ngaliyan, Kec. Ngaliyan, Kota Semarang, Jawa Tengah 50181</div>
         </div>
 
         <div class="contact-item">
@@ -164,7 +164,7 @@ session_start();
 
         <div class="contact-item">
           <span>📞</span>
-          <div>+62 812-3456-7890</div>
+          <div>+62 851-5982-2523</div>
         </div>
 
         <div class="contact-item">
@@ -173,7 +173,7 @@ session_start();
         </div>
 
         <div class="cta-btn mt-4">
-          <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-success">
+          <a href="https://wa.me/6285159822523" target="_blank" class="btn btn-success">
             Chat WhatsApp
           </a>
           <a href="login.php" class="btn btn-outline-success">
@@ -186,11 +186,14 @@ session_start();
     <!-- MAP -->
     <div class="col-md-7 mb-4">
       <div class="map-wrapper">
-        <!-- GANTI embed MAP sesuai lokasi studio -->
-        <iframe 
-          src="https://www.google.com/maps?q=Jakarta&output=embed"
-          loading="lazy">
-        </iframe>
+      <iframe
+        src="https://www.google.com/maps?q=-6.997141281983134, 110.34987055016498&z=15&output=embed"
+        width="100%"
+        height="300"
+        style="border:0;"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
       </div>
     </div>
 
