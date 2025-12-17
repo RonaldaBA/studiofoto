@@ -86,8 +86,15 @@ $bulan = [
                     <td><?= $data['id_paket'] ?></td>
                     <td><?= $data['nama_paket'] ?></td>
                     <td>
+                      <?php
+                      $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
+                      ?>
+                      <?php if ($role == 'fotografer') : ?>
+                        <!-- Tidak ada Tombol -->
+                      <?php else: ?>
                       <a class="btn btn-sm btn-danger mb-md-0 mb-1" href="delete.php?id_pemesanan=<?= $data['id_pemesanan'] ?>">
                         <i class="fas fa-trash fa-fw"></i>
+                      <?php endif ?>
                       </a>
                       <a class="btn btn-sm btn-info" href="edit.php?id_pemesanan=<?= $data['id_pemesanan'] ?>">
                         <i class="fas fa-edit fa-fw"></i>

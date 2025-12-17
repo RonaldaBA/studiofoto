@@ -27,15 +27,12 @@ $query = mysqli_query($connection, "SELECT * FROM pemesanan WHERE id_pemesanan='
                   <td><input class="form-control" type="number" name="id_pemesanan" size="20" required value="<?= $row['id_pemesanan'] ?>" disabled></td>
                 </tr>
                 <tr>
-                  <td>Tanggal Pemesanan</td>
-                  <td><input class="form-control" type="date" name="tgl_pemesanan" size="20" required value="<?= $row['tgl_pemesanan'] ?>"></td>
-                </tr>
-                <tr>
                   <td>Status</td>
                   <td>
                     <select class="form-control" name="status_pemesanan" required>
                       <option value="" disabled <?= empty($row['status_pemesanan']) ? 'selected' : '' ?>>Pilih status</option>
                       <option value="Belum Selesai" <?= ($row['status_pemesanan'] == 'Belum Selesai') ? 'selected' : '' ?>>Belum Selesai</option>
+                      <option value="Proses" <?= ($row['status_pemesanan'] == 'Proses') ? 'selected' : '' ?>>Proses</option>
                       <option value="Selesai" <?= ($row['status_pemesanan'] == 'Selesai') ? 'selected' : '' ?>>Selesai</option>
                     </select>
                   </td>

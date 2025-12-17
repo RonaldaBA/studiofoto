@@ -36,8 +36,15 @@ $result = mysqli_query($connection, "SELECT * FROM paket");
                     <td><?= $data['deskripsi'] ?></td>
                     <td>Rp. <?= number_format($data['harga_paket'], 0, ',', '.') ?></td>
                     <td>
+                      <?php
+                      $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
+                      ?>
+                      <?php if ($role == 'fotografer') : ?>
+                        <!-- Tidak ada Tombol -->
+                      <?php else: ?>
                       <a class="btn btn-sm btn-danger mb-md-0 mb-1" href="delete.php?id_paket=<?= $data['id_paket'] ?>">
                         <i class="fas fa-trash fa-fw"></i>
+                      <?php endif ?>
                       </a>
                       <a class="btn btn-sm btn-info" href="edit.php?id_paket=<?= $data['id_paket'] ?>">
                         <i class="fas fa-edit fa-fw"></i>

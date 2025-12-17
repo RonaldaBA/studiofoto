@@ -116,9 +116,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <!-- RIGHT: MENU - POJOK KANAN -->
     <div class="nav-right">
 
+        <a class="nav-link" href="../home.php">
+        Beranda
+      </a>
+
       <a class="nav-link <?= $currentPage == 'dashboard_customer.php' ? 'active' : '' ?>"
          href="dashboard_customer.php">
-        Beranda
+        Dashboard
       </a>
 
       <a class="nav-link <?= $currentPage == 'riwayat_transaksi.php' ? 'active' : '' ?>"

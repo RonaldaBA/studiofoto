@@ -32,6 +32,7 @@ require_once '../helper/connection.php';
                   <select class="form-control" name="status_pemesanan" required>
                     <option value="" disabled selected>Pilih status</option>
                     <option value="Belum Selesai">Belum Selesai</option>
+                    <option value="Proses">Proses</option>                    
                     <option value="Selesai">Selesai</option>
                   </select>
                 </td>

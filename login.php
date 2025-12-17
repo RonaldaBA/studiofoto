@@ -83,7 +83,9 @@ if (isset($_POST['submit'])) {
             <div class="login-brand">
                 <img src="assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:150px;">
             </div>
-
+            <div>
+              <a href="home.php" class="font-weight">< Kembali</a>
+            </div>
             <div class="card card-primary">
               <div class="card-header">
                 <h4>Selamat Datang!</h4>

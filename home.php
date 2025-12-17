@@ -138,10 +138,9 @@ session_start();
 
     <?php if (isset($_SESSION['login'])): ?>
       <li class="nav-item ml-lg-3">
-        <a class="btn btn-success rounded-pill px-4" 
-          href="<?= $_SESSION['role'] === 'cs' ? 'dashboard_cs.php' : 'dashboard.php' ?>">
-          Dashboard
-        </a>
+          <a class="btn btn-success rounded-pill px-4" href="signup.php">
+            Dashboard
+          </a>
       </li>
 
       <?php else: ?>
