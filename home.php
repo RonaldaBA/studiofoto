@@ -128,23 +128,23 @@ session_start();
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link active font-weight-bold" href="home.php">Home</a>
+        <a class="nav-link active font-weight-bold" href="home.php">Beranda</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="pricelist.php">Pricelist</a>
+        <a class="nav-link" href="pricelist.php">Daftar harga</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="contact.php">Contact</a>
+        <a class="nav-link" href="contact.php">Kontak</a>
       </li>
       <?php if(!isset($_SESSION['login'])): ?>
         <li class="nav-item ml-lg-3">
           <a class="btn btn-outline-success rounded-pill px-4 mr-2" href="signup.php">
-            Sign Up
+            Daftar
           </a>
         </li>
         <li class="nav-item">
           <a class="btn btn-success rounded-pill px-4" href="login.php">
-            Sign In
+            Masuk
           </a>
         </li>
       <?php else: ?>
