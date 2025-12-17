@@ -146,6 +146,16 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
         </ul>
       </li>
 
+      <li class="dropdown">
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
+          <i class="fas fa-book"></i> <span>Galeri</span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a class="nav-link" href="../gallery/index.php">Daftar Galeri</a></li>
+          <li><a class="nav-link" href="../gallery/create.php">Tambah Foto</a></li>
+        </ul>
+      </li>
+
 <?php else: ?> <!--  Untuk Dashboard Customer -->
       <li class="menu-header">Dashboard</li>
       <li><a class="nav-link" href="../dashboard/dashboard_customer.php"><i class="fas fa-home"></i> <span>Beranda</span></a></li>
