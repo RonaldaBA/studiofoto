@@ -129,10 +129,10 @@ session_start();
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link active font-weight-bold" href="home.php">Beranda</a>
+        <a class="nav-link" href="home.php">Beranda</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="pricelist.php">Daftar Harga</a>
+        <a class="nav-link active font-weight-bold" href="pricelist.php">Daftar Harga</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="contact.php">Kontak</a>
