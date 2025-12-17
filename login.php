@@ -60,7 +60,7 @@ if (isset($_POST['submit'])) {
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Login &mdash; RichArt Studio</title>
+  <title>Masuk &mdash; RichArt Studio</title>
   <h1></h1>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -121,6 +121,10 @@ if (isset($_POST['submit'])) {
                       Masuk
                     </button>
                   </div>
+                    <div class="text-center mt-4">
+                    Belum punya akun?
+                    <a href="signup.php" class="font-weight-bold">Daftar</a>
+                    </div>
                 </form>
                 <?php
                   // var_dump($error);
