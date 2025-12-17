@@ -136,21 +136,17 @@ session_start();
       <li class="nav-item">
         <a class="nav-link" href="contact.php">Contact</a>
       </li>
-      <?php if(!isset($_SESSION['login'])): ?>
+
+      <?php if(isset($_SESSION['login'])): ?>
         <li class="nav-item ml-lg-3">
-          <a class="btn btn-outline-success rounded-pill px-4 mr-2" href="signup.php">
+          <a class="btn btn-success rounded-pill px-4" href="signup.php">
             Sign Up
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="btn btn-success rounded-pill px-4" href="login.php">
-            Sign In
           </a>
         </li>
       <?php else: ?>
         <li class="nav-item ml-lg-3">
-          <a class="btn btn-success rounded-pill px-4" href="dashboard/index.php">
-            Dashboard
+          <a class="btn btn-success rounded-pill px-4" href="login.php">
+            Sign In
           </a>
         </li>
       <?php endif; ?>
