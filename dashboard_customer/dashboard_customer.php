@@ -12,11 +12,11 @@ $totalPesanan = mysqli_fetch_assoc(
 )['total'];
 
 $dalamProses = mysqli_fetch_assoc(
-    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_customer='$id_customer' AND status_pemesanan='Proses'")
+    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_customer='$id_customer' AND status_pemesanan='Menunggu Pembayaran'")
 )['total'];
 
 $selesai = mysqli_fetch_assoc(
-    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_customer='$id_customer' AND status_pemesanan='Selesai'")
+    mysqli_query($connection, "SELECT COUNT(*) total FROM pemesanan WHERE id_customer='$id_customer' AND status_pemesanan='Pemesanan Selesai'")
 )['total'];
 
 $terakhir = mysqli_fetch_assoc(
@@ -424,7 +424,7 @@ body {
         
         <div class="stat-card proses">
             <div class="stat-icon">⏳</div>
-            <div class="stat-label">Dalam Proses</div>
+            <div class="stat-label">Menunggu Pembayaran</div>
             <div class="stat-value"><?= $dalamProses; ?></div>
         </div>
         

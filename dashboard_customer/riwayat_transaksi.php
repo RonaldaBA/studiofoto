@@ -106,7 +106,7 @@ if (!$query) {
                         <th>Tanggal Pemotretan</th>
                         <th>Paket</th>
                         <th>Status Pesanan</th>
-                        <th>Status Pembayaran</th>
+                        <th>Metode Pembayaran</th>
                         <th>Total</th>
                         <th>Aksi</th>
                     </tr>
@@ -114,84 +114,89 @@ if (!$query) {
                 <tbody>
 
                 <?php
-                $no = 1;
-                if (mysqli_num_rows($query) > 0):
-                    while ($row = mysqli_fetch_assoc($query)):
+$no = 1;
 
-                        // === FORMAT TANGGAL ===
-                        $tgl = strtotime($row['tgl_pemesanan']);
-                        $hari = date('d', $tgl);
-                        $bulanIndo = $bulan[(int)date('m', $tgl)];
-                        $tahun = date('Y', $tgl);
+if (mysqli_num_rows($query) > 0) {
 
-                        // === STATUS PESANAN ===
-                        if ($row['status_pemesanan'] === 'Selesai') {
-                            $badgePesanan = 'badge-selesai';
-                        } else {
-                            $badgePesanan = 'badge-proses';
-                        }
+    while ($row = mysqli_fetch_assoc($query)) {
 
-                        // === STATUS PEMBAYARAN ===
-                        $now = time();
-                        if ($row['metode_pembayaran'] === 'Cash') {
+        // ===============================
+        // FORMAT TANGGAL
+        // ===============================
+        $tgl = strtotime($row['tgl_pemesanan']);
+        $hari = date('d', $tgl);
+        $bulanIndo = $bulan[(int)date('m', $tgl)];
+        $tahun = date('Y', $tgl);
 
-                            $statusBayar = 'Bayar di Tempat';
-                            $badgeBayar  = 'badge-secondary';
+        // ===============================
+        // STATUS PESANAN
+        // ===============================
+        switch ($row['status_pemesanan']) {
+            case 'Menunggu Pembayaran':
+                $badgePesanan = 'badge-warning';
+                break;
+            case 'Pemesanan Aktif':
+                $badgePesanan = 'badge-proses';
+                break;
+            case 'Pemesanan Selesai':
+                $badgePesanan = 'badge-selesai';
+                break;
+            case 'Dibatalkan':
+                $badgePesanan = 'badge-danger';
+                break;
+            default:
+                $badgePesanan = 'badge-secondary';
+        }
 
-                        } elseif ($row['metode_pembayaran'] === 'QRIS') {
+        // ===============================
+        // METODE PEMBAYARAN (INFO)
+        // ===============================
+        if ($row['metode_pembayaran'] === 'Cash') {
+            $metodeBayar = 'Cash';
+            $badgeBayar  = 'badge-secondary';
+        } elseif ($row['metode_pembayaran'] === 'QRIS') {
+            $metodeBayar = 'QRIS';
+            $badgeBayar  = 'badge-primary';
+        } else {
+            $metodeBayar = '-';
+            $badgeBayar  = 'badge-secondary';
+        }
+?>
+<tr>
+    <td><?= $no++; ?></td>
+    <td><?= "$hari $bulanIndo $tahun"; ?></td>
+    <td><?= htmlspecialchars($row['nama_paket']); ?></td>
+    <td>
+        <span class="badge badge-status <?= $badgePesanan ?>">
+            <?= $row['status_pemesanan']; ?>
+        </span>
+    </td>
+    <td>
+        <span class="badge badge-status <?= $badgeBayar ?>">
+            <?= $metodeBayar; ?>
+        </span>
+    </td>
+    <td>Rp <?= number_format($row['ringkasan_biaya'], 0, ',', '.'); ?></td>
+    <td>
+        <a href="struk_pembayaran.php?id=<?= $row['id_pemesanan']; ?>"
+           class="btn btn-success btn-sm">
+            Lihat Struk
+        </a>
+    </td>
+</tr>
+<?php
+    } // END WHILE
 
-                            if (!empty($row['created_at'])) {
-                                $expired = strtotime($row['created_at']) + 86400;
-                            } else {
-                                $expired = 0;
-                            }
-
-                            if (time() <= $expired) {
-                                $statusBayar = 'Menunggu Pembayaran';
-                                $badgeBayar  = 'badge-warning';
-                            } else {
-                                $statusBayar = 'QRIS Expired';
-                                $badgeBayar  = 'badge-danger';
-                            }
-
-                        } else {
-                            $statusBayar = 'Tidak Diketahui';
-                            $badgeBayar  = 'badge-secondary';
-                        }
-
-                ?>
-                    <tr>
-                        <td><?= $no++; ?></td>
-                        <td><?= "$hari $bulanIndo $tahun"; ?></td>
-                        <td><?= htmlspecialchars($row['nama_paket']); ?></td>
-                        <td>
-                            <span class="badge badge-status <?= $badgePesanan ?>">
-                                <?= $row['status_pemesanan']; ?>
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge badge-status <?= $badgeBayar ?>">
-                                <?= $statusBayar; ?>
-                            </span>
-                        </td>
-                        <td>Rp <?= number_format($row['ringkasan_biaya'],0,',','.'); ?></td>
-                        <td>
-                            <a href="struk_pembayaran.php?id=<?= $row['id_pemesanan']; ?>"
-                               class="btn btn-success btn-sm">
-                                Lihat Struk
-                            </a>
-                        </td>
-                    </tr>
-                <?php
-                    endwhile;
-                else:
-                ?>
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
-                            Belum ada transaksi
-                        </td>
-                    </tr>
-                <?php endif; ?>
+} else {
+?>
+<tr>
+    <td colspan="7" class="text-center text-muted py-4">
+        Belum ada transaksi
+    </td>
+</tr>
+<?php
+} // END IF
+?>
 
                 </tbody>
             </table>

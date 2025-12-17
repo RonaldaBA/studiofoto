@@ -43,7 +43,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'cek_jam') {
             SELECT COUNT(DISTINCT id_photographer) sibuk
             FROM pemesanan
             WHERE tgl_pemesanan='$datetime'
-            AND status_pemesanan IN ('Proses','Selesai')
+            AND status_pemesanan IN ('Menunggu Pembayaran','Pemesanan Selesai')
             AND id_photographer IS NOT NULL
         ");
 
@@ -54,6 +54,56 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'cek_jam') {
     echo json_encode($result);
     exit;
 }
+
+/* ================================
+   AJAX CEK TANGGAL (KALENDER)
+   ================================ */
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'cek_tanggal') {
+
+    $bulan = (int) $_GET['bulan']; // 1-12
+    $tahun = (int) $_GET['tahun'];
+
+    $jam_list = ['08:00','09:00','10:00','11:00','13:00','14:00','15:00','16:00'];
+
+    // total fotografer
+    $qTotal = mysqli_query($connection,"SELECT COUNT(*) total FROM photographer");
+    $totalFoto = mysqli_fetch_assoc($qTotal)['total'];
+
+    $result = [];
+    $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $bulan, $tahun);
+
+    for ($d = 1; $d <= $daysInMonth; $d++) {
+
+        $tanggal = sprintf('%04d-%02d-%02d', $tahun, $bulan, $d);
+        $availableJam = 0;
+
+        foreach ($jam_list as $jam) {
+            $tgl_jam = $tanggal.' '.$jam.':00';
+
+            $qBusy = mysqli_query($connection,"
+                SELECT COUNT(DISTINCT id_photographer) sibuk
+                FROM pemesanan
+                WHERE tgl_pemesanan='$tgl_jam'
+                AND status_pemesanan IN ('Menunggu Pembayaran','Pemesanan Selesai')
+            ");
+
+            $sibuk = mysqli_fetch_assoc($qBusy)['sibuk'];
+
+            if ($sibuk < $totalFoto) {
+                $availableJam++;
+            }
+        }
+
+        // JIKA SEMUA JAM HABIS → BOOKED
+        if ($availableJam == 0) {
+            $result[] = $tanggal;
+        }
+    }
+
+    echo json_encode($result);
+    exit;
+}
+
 
 // ===== CREATE =====
 if (isset($_POST['simpan'])) {
@@ -112,7 +162,7 @@ if (isset($_POST['simpan'])) {
                 SELECT COUNT(DISTINCT id_photographer) total
                 FROM pemesanan
                 WHERE tgl_pemesanan='$tgl_jam'
-                AND status_pemesanan IN ('Proses','Selesai')
+                AND status_pemesanan IN ('Menunggu Pembayaran','Pemesanan Selesai')
             ");
 
             $terpakai = mysqli_fetch_assoc($qCek)['total'];
@@ -125,7 +175,7 @@ if (isset($_POST['simpan'])) {
                     WHERE id_photographer NOT IN (
                         SELECT id_photographer FROM pemesanan
                         WHERE tgl_pemesanan='$tgl_jam'
-                        AND status_pemesanan IN ('Proses','Selesai')
+                        AND status_pemesanan IN ('Menunggu Pembayaran','Pemesanan Selesai')
                     )
                     LIMIT 1
                 ");
@@ -153,7 +203,7 @@ if (isset($_POST['simpan'])) {
                 ) VALUES (
                     '$id_customer',
                     '$tgl_jam',
-                    'Proses',
+                    'Menunggu Pembayaran',
                     '$total',
                     '$id_paket',
                     " . ($id_photographer ? "'$id_photographer'" : "NULL") . ",
@@ -176,8 +226,10 @@ $data = mysqli_query($connection, "
     FROM pemesanan p
     JOIN paket pk ON p.id_paket = pk.id_paket
     WHERE p.id_customer = '$id_customer'
+    AND p.status_pemesanan = 'Menunggu Pembayaran'
     ORDER BY p.id_pemesanan DESC
 ");
+
 
 // GET PAKET DATA - Group by category
 $paket_list = mysqli_query($connection, "SELECT * FROM paket ORDER BY nama_paket ASC");
@@ -1006,9 +1058,9 @@ $paket_by_category = $sorted_categories;
                     while ($row = mysqli_fetch_assoc($data)) {
                         $statusClass = '';
                         switch($row['status_pemesanan']) {
-                            case 'Proses': $statusClass = 'badge-warning'; break;
-                            case 'Selesai': $statusClass = 'badge-success'; break;
-                            case 'Batal': $statusClass = 'badge-danger'; break;
+                            case 'Menunggu Pembayaran': $statusClass = 'badge-warning'; break;
+                            case 'Pemesanan Selesai': $statusClass = 'badge-success'; break;
+                            case 'Dibatalkan': $statusClass = 'badge-danger'; break;
                             default: $statusClass = 'badge-secondary';
                         }
                         
@@ -1044,18 +1096,27 @@ const jamSelect = document.querySelector('select[name="jam"]');
 
 function loadJam() {
     const tanggal = document.getElementById('tanggalInput').value;
-    const paket   = document.querySelector('input[name^="paket_qty"][value!="0"]');
+
+    // cari paket yang qty > 0 (cara aman)
+    const paketInputs = document.querySelectorAll('input[name^="paket_qty"]');
+    let paket = null;
+
+    paketInputs.forEach(input => {
+        if (parseInt(input.value) > 0 && !paket) {
+            paket = input;
+        }
+    });
 
     if (!tanggal || !paket) return;
 
     fetch(`pesan_sekarang.php?ajax=cek_jam&tanggal=${tanggal}&paket=${paket.id.replace('qty_','')}`)
-    .then(res => res.json())
-    .then(data => {
-        [...jamSelect.options].forEach(opt => {
-            if (!opt.value) return;
-            opt.disabled = !data[opt.value];
+        .then(res => res.json())
+        .then(data => {
+            [...jamSelect.options].forEach(opt => {
+                if (!opt.value) return;
+                opt.disabled = !data[opt.value];
+            });
         });
-    });
 }
 
 
@@ -1066,6 +1127,8 @@ function loadJam() {
 let currentMonth = new Date().getMonth();
 let currentYear  = new Date().getFullYear();
 let selectedDate = null;
+let bookedDates = [];
+
 
 const monthNames = [
   'Januari','Februari','Maret','April','Mei','Juni',
@@ -1082,6 +1145,16 @@ function formatDate(date) {
   const d = String(date.getDate()).padStart(2,'0');
   return `${y}-${m}-${d}`;
 }
+
+function loadBookedDates() {
+  fetch(`pesan_sekarang.php?ajax=cek_tanggal&bulan=${currentMonth+1}&tahun=${currentYear}`)
+    .then(res => res.json())
+    .then(data => {
+      bookedDates = data;
+      renderCalendar();
+    });
+}
+
 
 /* =========================
    CALENDAR
@@ -1122,11 +1195,16 @@ function renderCalendar() {
     el.textContent = d;
 
     if (dateObj < today) {
-      el.classList.add('past');
-    } else {
-      el.classList.add('available');
-      el.onclick = () => selectDate(dateStr, el);
+    el.classList.add('past');
     }
+    else if (bookedDates.includes(dateStr)) {
+        el.classList.add('booked');
+    }
+    else {
+        el.classList.add('available');
+        el.onclick = () => selectDate(dateStr, el);
+}
+
 
     if (selectedDate === dateStr) {
       el.classList.add('selected');
@@ -1157,14 +1235,14 @@ function changeMonth(delta) {
   currentMonth += delta;
   if (currentMonth < 0) { currentMonth=11; currentYear--; }
   if (currentMonth > 11){ currentMonth=0; currentYear++; }
-  renderCalendar();
+  loadBookedDates();
 }
 
 /* =========================
    INIT
 ========================= */
 document.addEventListener('DOMContentLoaded', () => {
-  renderCalendar();
+  loadBookedDates();
 });
 
 

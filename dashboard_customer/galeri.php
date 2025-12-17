@@ -452,7 +452,7 @@ $query = "
     JOIN gallery g ON g.id_pemesanan = p.id_pemesanan
     JOIN paket pk ON p.id_paket = pk.id_paket
     WHERE p.id_customer = ?
-      AND p.status_pemesanan = 'Selesai'
+      AND p.status_pemesanan = 'Pemesanan Selesai'
     GROUP BY p.id_pemesanan
     ORDER BY p.tgl_pemesanan DESC
 ";

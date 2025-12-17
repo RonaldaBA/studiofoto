@@ -42,6 +42,25 @@ $now = time();
 
 $sisa_waktu = $expiredAt - $now;
 $expired = $sisa_waktu <= 0;
+
+// =======================
+// AUTO BATAL JIKA QRIS EXPIRED
+// =======================
+if (
+    $data['metode_pembayaran'] === 'QRIS'
+    && $data['status_pemesanan'] === 'Menunggu Pembayaran'
+    && $expired
+) {
+    mysqli_query($connection, "
+        UPDATE pemesanan
+        SET status_pemesanan = 'Dibatalkan'
+        WHERE id_pemesanan = '$id_pemesanan'
+    ");
+
+    // update data lokal biar tampilan ikut berubah
+    $data['status_pemesanan'] = 'Dibatalkan';
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -155,11 +174,12 @@ $expired = $sisa_waktu <= 0;
 <div class="divider"></div>
 
 <!-- =======================
-     QRIS SECTION
+     STRUK PEMBAYARAN
 ======================= -->
+
 <?php if ($data['metode_pembayaran'] === 'QRIS'): ?>
 
-    <?php if ($sisa_waktu > 0): ?>
+    <?php if ($data['status_pemesanan'] === 'Menunggu Pembayaran'): ?>
         <div class="qris-box">
             <h6>⏳ Selesaikan Pembayaran Dalam</h6>
             <h4 id="countdown" style="color:red;"></h4>
@@ -167,13 +187,29 @@ $expired = $sisa_waktu <= 0;
             <p>Scan QRIS di bawah ini:</p>
             <img src="../assets/img/Qris.jpeg" alt="QRIS">
         </div>
-    <?php else: ?>
+
+    <?php elseif (
+        $data['status_pemesanan'] === 'Pemesanan Aktif'
+        || $data['status_pemesanan'] === 'Pemesanan Selesai'
+    ): ?>
+        <div class="alert alert-success text-center">
+            ✅ Anda telah menyelesaikan pembayaran dengan QRIS
+        </div>
+
+    <?php elseif ($data['status_pemesanan'] === 'Dibatalkan'): ?>
         <div class="alert alert-danger text-center">
-            ⛔ QRIS Expired (24 jam telah berlalu)
+            ⛔ Anda tidak menyelesaikan pembayaran dengan QRIS dalam 24 jam
         </div>
     <?php endif; ?>
 
+<?php elseif ($data['metode_pembayaran'] === 'Cash'): ?>
+
+    <div class="alert alert-info text-center">
+        💵 Pembayaran dilakukan secara langsung (Cash) di studio
+    </div>
+
 <?php endif; ?>
+
 
 
 <a href="riwayat_transaksi.php" class="btn btn-success btn-back">
@@ -183,7 +219,12 @@ $expired = $sisa_waktu <= 0;
 </div>
 </div>
 
-<?php if ($data['metode_pembayaran'] === 'QRIS' && !$expired): ?>
+<?php if (
+    $data['metode_pembayaran'] === 'QRIS'
+    && $data['status_pemesanan'] === 'Menunggu Pembayaran'
+    && !$expired
+): ?>
+
 <script>
 let sisa = <?= max(0, $sisa_waktu) ?>;
 
