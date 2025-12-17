@@ -8,7 +8,11 @@ $result = mysqli_query($connection, "SELECT * FROM paket");
 <section class="section">
   <div class="section-header d-flex justify-content-between">
     <h1>Daftar Paket</h1>
-    <a href="./create.php" class="btn btn-primary"><i class="fas fa-plus-square mr-2"></i>Tambah Data</a>
+    <?php if ($_SESSION['role'] == 'fotografer') : ?>
+      <!-- Tidak ada Tombol -->
+    <?php else: ?>
+      <a href="./create.php" class="btn btn-primary"><i class="fas fa-plus-square mr-2"></i>Tambah Data</a>
+    <?php endif ?>
   </div>
   <div class="row">
     <div class="col-12">

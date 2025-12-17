@@ -112,7 +112,7 @@ if (isset($_POST['update'])) {
                     </a>
                 <?php endif; ?>
 
-                <a href="logout.php"
+                <a href="../logout.php"
                 class="btn btn-outline-danger btn-sm"
                 onclick="return confirm('Yakin ingin keluar?')">
                     Keluar

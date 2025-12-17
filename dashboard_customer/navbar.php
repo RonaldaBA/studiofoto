@@ -116,10 +116,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <!-- RIGHT: MENU - POJOK KANAN -->
     <div class="nav-right">
 
-        <a class="nav-link" href="../home.php">
-        Beranda
-      </a>
-
       <a class="nav-link <?= $currentPage == 'dashboard_customer.php' ? 'active' : '' ?>"
          href="dashboard_customer.php">
         Dashboard
@@ -142,10 +138,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
       <a href="profil.php" class="btn-account">
         Profil Saya
-      </a>
-
-      <a href="../logout.php" class="btn-account">
-        Keluar
       </a>
 
     </div>

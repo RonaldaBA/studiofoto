@@ -5,9 +5,7 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
 <div class="main-sidebar sidebar-style-2">
   <aside id="sidebar-wrapper">
     <div class="sidebar-brand">
-      <a href="index.php">
-        <img src="../assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:50px;">
-      </a>
+      <img src="../assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:50px;">
     </div>
     <div class="sidebar-brand sidebar-brand-sm">
       <a href="index.php">R-Art</a>
@@ -142,7 +140,6 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
         </a>
         <ul class="dropdown-menu">
           <li><a class="nav-link" href="../package/index.php">Daftar Paket</a></li>
-          <li><a class="nav-link" href="../package/create.php">Tambah Data</a></li>
         </ul>
       </li>
 
