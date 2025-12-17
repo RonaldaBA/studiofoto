@@ -31,9 +31,9 @@ $query = mysqli_query($connection, "SELECT * FROM pemesanan WHERE id_pemesanan='
                   <td>
                     <select class="form-control" name="status_pemesanan" required>
                       <option value="" disabled <?= empty($row['status_pemesanan']) ? 'selected' : '' ?>>Pilih status</option>
-                      <option value="Belum Selesai" <?= ($row['status_pemesanan'] == 'Belum Selesai') ? 'selected' : '' ?>>Belum Selesai</option>
-                      <option value="Proses" <?= ($row['status_pemesanan'] == 'Proses') ? 'selected' : '' ?>>Proses</option>
-                      <option value="Selesai" <?= ($row['status_pemesanan'] == 'Selesai') ? 'selected' : '' ?>>Selesai</option>
+                      <option value="Menunggu Pembayaran" <?= ($row['status_pemesanan'] == 'Menunggu Pembayaran') ? 'selected' : '' ?>>Menunggu Pembayaran</option>
+                      <option value="Pemesanan Aktif" <?= ($row['status_pemesanan'] == 'Pemesanan Aktif') ? 'selected' : '' ?>>Pemesanan Aktif</option>
+                      <option value="Pemesanan Selesai" <?= ($row['status_pemesanan'] == 'Pemesanan Selesai') ? 'selected' : '' ?>>Pemesanan Selesai</option>
                     </select>
                   </td>
                 </tr>

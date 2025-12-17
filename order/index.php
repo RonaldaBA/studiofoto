@@ -66,12 +66,16 @@ $bulan = [
                     ?>
                     <td><?= $hari . ' ' . $bulanIndo . ' ' . $tahun ?></td>
                     <td>
-                      <?php if ($data['status_pemesanan'] == 'Selesai'): ?>
+                      <?php if ($data['status_pemesanan'] == 'Pemesanan Selesai'): ?>
                           <span class="badge bg-success text-light rounded-pill px-3 py-2">
                               <?= htmlspecialchars($data['status_pemesanan']) ?>
                           </span>
-                      <?php elseif ($data['status_pemesanan'] == 'Belum Selesai'): ?>
+                      <?php elseif ($data['status_pemesanan'] == 'Pemesanan Aktif'): ?>
                           <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                              <?= htmlspecialchars($data['status_pemesanan']) ?>
+                          </span>
+                      <?php elseif ($data['status_pemesanan'] == 'Dibatalkan'): ?>
+                          <span class="badge bg-danger text-white rounded-pill px-3 py-2">
                               <?= htmlspecialchars($data['status_pemesanan']) ?>
                           </span>
                       <?php else: ?>
