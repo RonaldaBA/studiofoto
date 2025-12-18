@@ -1,10 +1,34 @@
-</div>
+<style>
+/* ===== FOOTER SELARAS HOME ===== */
+.main-footer {
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 14px 24px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.main-footer .footer-left {
+    font-weight: 500;
+}
+
+.main-footer .footer-left span {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.main-footer .footer-right {
+    font-size: 12px;
+    color: #9ca3af;
+}
+</style>
+
 <footer class="main-footer">
   <div class="footer-left">
-    RichArt Studio</a>
+    <span>RichArt Studio</span> &copy; <?= date('Y'); ?>
   </div>
   <div class="footer-right">
-
+    Customer Service Panel
   </div>
 </footer>
 </div>
