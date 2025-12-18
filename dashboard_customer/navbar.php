@@ -140,6 +140,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         Profil Saya
       </a>
 
+      <a href="../logout.php"
+        class="btn-logout"
+        onclick="return confirm('Yakin ingin logout?')">
+        Logout
+      </a>
     </div>
   </div>
 </nav>
