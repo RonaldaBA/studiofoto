@@ -131,13 +131,15 @@ session_start();
             Masuk
           </a>
         </li>
-      <?php else: ?>
-        <li class="nav-item ml-lg-3">
-          <a class="btn btn-success rounded-pill px-4" href="dashboard/index.php">
-            Dashboard
-          </a>
-        </li>
-      <?php endif; ?>
+        <?php else: ?>
+          <li class="nav-item ml-lg-3">
+            <a class="btn btn-danger rounded-pill px-4" 
+              href="logout.php"
+              onclick="return confirm('Yakin ingin logout?')">
+              Logout
+            </a>
+          </li>
+        <?php endif; ?>
     </ul>
   </div>
 </nav>
