@@ -6,20 +6,16 @@ if (isset($_POST['submit'])) {
     $input    = $_POST['username'];
     $password = $_POST['password'];
 
-    /**
-     * =====================
-     * 1. LOGIN STAFF (username)
-     * =====================
-     */
+    // ===== LOGIN STAFF =====
     $sqlUser = "SELECT * FROM user WHERE username='$input' LIMIT 1";
     $resultUser = mysqli_query($connection, $sqlUser);
     $user = mysqli_fetch_assoc($resultUser);
 
     if ($user && $password === $user['password']) {
-        $_SESSION['login']   = true;
-        $_SESSION['role']    = strtolower($user['role']);
+        $_SESSION['login']    = true;
+        $_SESSION['role']     = strtolower($user['role']);
         $_SESSION['username'] = $user['username'];
-        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_id']  = $user['id'];
 
         if ($_SESSION['role'] === 'manajer') {
             header('Location: dashboard/dashboard_manager.php');
@@ -31,132 +27,156 @@ if (isset($_POST['submit'])) {
         exit;
     }
 
-    /**
-     * =====================
-     * 2. LOGIN CUSTOMER (NAMA)
-     * =====================
-     */
+    // ===== LOGIN CUSTOMER =====
     $sqlCustomer = "SELECT * FROM customer WHERE nama='$input' LIMIT 1";
     $resultCustomer = mysqli_query($connection, $sqlCustomer);
     $customer = mysqli_fetch_assoc($resultCustomer);
 
     if ($customer && $password === $customer['password']) {
-        $_SESSION['login']   = true;
+        $_SESSION['login'] = true;
         $_SESSION['id_customer'] = $customer['id_customer'];
-        $_SESSION['nama']    = $customer['nama'];
+        $_SESSION['nama'] = $customer['nama'];
 
         header('Location: dashboard_customer/dashboard_customer.php');
         exit;
     }
 
-    // kalau dua-duanya gagal
     $error = true;
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Masuk &mdash; RichArt Studio</title>
-  <h1></h1>
-  <!-- General CSS Files -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<meta charset="UTF-8">
+<title>Masuk | RichArt Studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- CSS Libraries -->
-  <link rel="stylesheet" href="assets/modules/bootstrap-social/bootstrap-social.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-  <!-- Template CSS -->
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/components.css">
+<style>
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg, #f8fafc, #e5e7eb);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* CARD */
+.login-card {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+}
+
+/* LOGO */
+.login-logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-logo img {
+    height: 110px;
+}
+
+/* TITLE */
+.login-card h4 {
+    font-weight: 700;
+    text-align: center;
+}
+
+.login-card p {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* INPUT */
+.form-control {
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+/* BUTTON */
+.btn-login {
+    background: #22c55e;
+    border: none;
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+}
+
+.btn-login:hover {
+    background: #16a34a;
+}
+
+/* LINK */
+.back-link {
+    font-size: 14px;
+    display: inline-block;
+    margin-bottom: 15px;
+    color: #6b7280;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: #111827;
+}
+
+/* ERROR */
+.alert {
+    border-radius: 12px;
+}
+</style>
 </head>
 
 <body>
-  <div id="app">
-    <section class="section">
-      <div class="container mt-5">
-        <div class="row">
-          <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
-            <div class="login-brand">
-                <img src="assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:150px;">
-            </div>
-            <div>
-              <a href="home.php" class="font-weight">< Kembali</a>
-            </div>
-            <div class="card card-primary">
-              <div class="card-header">
-                <h4>Selamat Datang!</h4>
-              </div>
 
-              <div class="card-body">
-                <form method="POST" action="" class="needs-validation" novalidate="">
-                  <div class="form-group">
-                    <label for="username">Nama Pengguna</label>
-                    <input id="username" type="text" class="form-control" name="username" tabindex="1" required autofocus>
-                    <div class="invalid-feedback">
-                      Mohon isi nama pengguna
-                    </div>
-                  </div>
+<div class="login-card">
 
-                  <div class="form-group">
-                    <div class="d-block">
-                      <label for="password" class="control-label">Kata Sandi</label>
-                    </div>
-                    <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
-                    <div class="invalid-feedback">
-                      Mohon isi kata sandi
-                    </div>
-                  </div>
+    <a href="home.php" class="back-link">&larr; Kembali ke Beranda</a>
 
-                  <!-- <div class="form-group">
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" name="remember" class="custom-control-input" tabindex="3" id="remember-me">
-                      <label class="custom-control-label" for="remember-me">Ingat Saya</label>
-                    </div>
-                  </div> -->
+    <div class="login-logo">
+        <img src="assets/img/richart_logo.jpg" alt="RichArt Studio">
+    </div>
 
-                  <div class="form-group">
-                    <button name="submit" type="submit" class="btn btn-primary btn-lg btn-block" tabindex="3">
-                      Masuk
-                    </button>
-                  </div>
-                    <div class="text-center mt-4">
-                    Belum punya akun?
-                    <a href="signup.php" class="font-weight-bold">Daftar</a>
-                    </div>
-                </form>
-                <?php
-                  // var_dump($error);
-                    if(isset($error)) {
-                        echo "<p class='alert alert-danger mt-4'> Nama pengguna atau kata sandi salah! </p>";
-                    }
-                ?>                
-              </div>
-            </div>
-          </div>
+    <h4>Selamat Datang</h4>
+    <p>Masuk untuk melanjutkan ke akun Anda</p>
+
+    <?php if (isset($error)): ?>
+        <div class="alert alert-danger text-center">
+            Nama pengguna atau kata sandi salah
         </div>
-      </div>
-    </section>
-  </div>
+    <?php endif; ?>
 
-  <!-- General JS Scripts -->
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script src="assets/js/stisla.js"></script>
+    <form method="POST" class="mt-3">
+        <div class="form-group">
+            <label>Nama Pengguna</label>
+            <input type="text" name="username" class="form-control" required autofocus>
+        </div>
 
-  <!-- JS Libraies -->
+        <div class="form-group">
+            <label>Kata Sandi</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
 
-  <!-- Template JS File -->
-  <script src="assets/js/scripts.js"></script>
-  <script src="assets/js/custom.js"></script>
+        <button type="submit" name="submit" class="btn btn-login btn-block">
+            Masuk
+        </button>
+    </form>
 
-  <!-- Page Specific JS File -->
+    <div class="text-center mt-4">
+        Belum punya akun?
+        <a href="signup.php" class="font-weight-bold">Daftar</a>
+    </div>
+</div>
+
 </body>
-
 </html>
