@@ -2,7 +2,31 @@
 session_start();
 require_once 'helper/connection.php';
 
-$paket = mysqli_query($connection, "SELECT * FROM paket ORDER BY nama_paket ASC");
+/* =======================
+   SEARCH & FILTER LOGIC
+======================= */
+$search   = isset($_GET['search']) ? mysqli_real_escape_string($connection, $_GET['search']) : '';
+$kategori = isset($_GET['kategori']) ? mysqli_real_escape_string($connection, $_GET['kategori']) : '';
+
+$where = [];
+
+if ($search !== '') {
+    $where[] = "(nama_paket LIKE '%$search%' OR deskripsi LIKE '%$search%')";
+}
+
+if ($kategori !== '') {
+    $where[] = "nama_paket LIKE '%$kategori%'";
+}
+
+$whereSQL = '';
+if (!empty($where)) {
+    $whereSQL = 'WHERE ' . implode(' AND ', $where);
+}
+
+$paket = mysqli_query(
+    $connection,
+    "SELECT * FROM paket $whereSQL ORDER BY nama_paket ASC"
+);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -14,106 +38,71 @@ $paket = mysqli_query($connection, "SELECT * FROM paket ORDER BY nama_paket ASC"
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
 <style>
-body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background-color: #f8fafc;
-    color: #1f2937;
+body{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background:#f8fafc;
+    color:#1f2937
 }
-
-/* NAVBAR */
-.navbar {
-    padding: 14px 32px;
-}
-
-.navbar-brand {
-    font-weight: 700;
-}
+.navbar{padding:14px 32px}
+.navbar-brand{font-weight:700}
 
 /* HEADER */
-.page-header {
-    text-align: center;
-    padding: 70px 20px 40px;
-    background: linear-gradient(135deg, #f8fafc, #e5e7eb);
+.page-header{
+    text-align:center;
+    padding:70px 20px 40px;
+    background:linear-gradient(135deg,#f8fafc,#e5e7eb)
+}
+.page-header h1{font-size:36px;font-weight:700}
+.page-header p{color:#6b7280;font-size:15px;margin-top:8px}
+
+/* FILTER */
+.filter-box{
+    background:#fff;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.05)
 }
 
-.page-header h1 {
-    font-size: 36px;
-    font-weight: 700;
+/* CARD */
+.price-card{
+    background:#fff;
+    border-radius:18px;
+    padding:26px 22px;
+    box-shadow:0 12px 25px rgba(0,0,0,.06);
+    transition:.25s;
+    height:100%
 }
-
-.page-header p {
-    color: #6b7280;
-    font-size: 15px;
-    margin-top: 8px;
+.price-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 20px 35px rgba(0,0,0,.12)
 }
-
-/* SECTION */
-section {
-    padding: 50px 0;
+.price-title{font-size:17px;font-weight:700}
+.price{font-size:28px;font-weight:800;color:#16a34a;margin:10px 0}
+.price-list{list-style:none;padding:0;margin-top:14px}
+.price-list li{
+    padding:6px 0;
+    border-bottom:1px solid #e5e7eb;
+    font-size:13px
 }
-
-/* PRICE CARD */
-.price-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 26px 22px;
-    box-shadow: 0 12px 25px rgba(0,0,0,0.06);
-    transition: transform .25s ease, box-shadow .25s ease;
-    height: 100%;
+.price-list li:last-child{border-bottom:none}
+.price-note{
+    font-size:12px;
+    color:#6b7280;
+    margin-top:8px
 }
-
-.price-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 35px rgba(0,0,0,0.12);
-}
-
-.price-title {
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.price {
-    font-size: 28px;
-    font-weight: 800;
-    color: #16a34a;
-    margin: 10px 0;
-}
-
-.price-list {
-    list-style: none;
-    padding-left: 0;
-    margin-top: 14px;
-}
-
-.price-list li {
-    padding: 6px 0;
-    border-bottom: 1px solid #e5e7eb;
-    font-size: 13px;
-}
-
-.price-list li:last-child {
-    border-bottom: none;
-}
-
-.price-note {
-    font-size: 12px;
-    color: #6b7280;
-    margin-top: 10px;
-}
-
-.price-card .btn {
-    margin-top: 16px;
-    border-radius: 999px;
-    padding: 8px;
+.btn-book{
+    margin-top:14px;
+    border-radius:999px;
+    padding:8px
 }
 
 /* FOOTER */
-footer {
-    background: #0f172a;
-    color: #cbd5f5;
-    padding: 18px;
-    text-align: center;
-    font-size: 13px;
+footer{
+    background:#0f172a;
+    color:#cbd5f5;
+    padding:18px;
+    text-align:center;
+    font-size:13px
 }
 </style>
 </head>
@@ -122,7 +111,7 @@ footer {
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <img src="assets/img/richart_logo.jpg" style="height:36px;margin-right:10px;">
+    <img src="assets/img/richart_logo.jpg" style="height:36px;margin-right:10px">
     <a class="navbar-brand" href="home.php">RichArt Studio</a>
 
     <div class="collapse navbar-collapse">
@@ -157,10 +146,39 @@ footer {
     <p>Pilih paket sesuai kebutuhanmu</p>
 </div>
 
-<!-- PRICELIST -->
+<!-- SEARCH & FILTER -->
+<section class="container mb-4">
+    <div class="filter-box">
+        <form method="GET" class="row">
+            <div class="col-md-5 mb-2">
+                <input type="text" name="search"
+                       value="<?= htmlspecialchars($search) ?>"
+                       class="form-control rounded-pill"
+                       placeholder="Cari paket foto, cetak, studio...">
+            </div>
+            <div class="col-md-4 mb-2">
+                <select name="kategori" class="form-control rounded-pill">
+                    <option value="">Semua Kategori</option>
+                    <option value="Cetak" <?= $kategori=='Cetak'?'selected':'' ?>>Cetak Foto</option>
+                    <option value="Studio" <?= $kategori=='Studio'?'selected':'' ?>>Studio</option>
+                    <option value="Prewedding" <?= $kategori=='Prewedding'?'selected':'' ?>>Prewedding</option>
+                    <option value="Engagement" <?= $kategori=='Engagement'?'selected':'' ?>>Engagement</option>
+                    <option value="Pas Foto" <?= $kategori=='Pas Foto'?'selected':'' ?>>Pas Foto</option>
+                    <option value="Richbooth" <?= $kategori=='Richbooth'?'selected':'' ?>>Richbooth</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-2">
+                <button class="btn btn-success rounded-pill btn-block">Terapkan</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- LIST PAKET -->
 <section class="container">
     <div class="row">
 
+    <?php if(mysqli_num_rows($paket) > 0): ?>
         <?php while($row = mysqli_fetch_assoc($paket)): ?>
         <div class="col-md-4 mb-4">
             <div class="price-card">
@@ -169,24 +187,29 @@ footer {
 
                 <ul class="price-list">
                     <?php
-                    $desc = nl2br(htmlspecialchars($row['deskripsi']));
-                    foreach (explode('<br />', $desc) as $d):
-                        if(trim($d) != ''):
+                    $desc = explode("\n", $row['deskripsi']);
+                    foreach ($desc as $d):
+                        if(trim($d)!=''):
                     ?>
-                        <li><?= $d ?></li>
+                        <li><?= htmlspecialchars($d) ?></li>
                     <?php endif; endforeach; ?>
                 </ul>
 
                 <?php if(!empty($row['note'])): ?>
-                <div class="price-note">
-                    <?= nl2br(htmlspecialchars($row['note'])) ?>
-                </div>
+                    <div class="price-note">
+                        <?= nl2br(htmlspecialchars($row['note'])) ?>
+                    </div>
                 <?php endif; ?>
 
-                <a href="login.php" class="btn btn-success btn-block">Booking</a>
+                <a href="login.php" class="btn btn-success btn-book btn-block">Booking</a>
             </div>
         </div>
         <?php endwhile; ?>
+    <?php else: ?>
+        <div class="col-12 text-center text-muted mt-4">
+            <p>Tidak ada paket yang sesuai.</p>
+        </div>
+    <?php endif; ?>
 
     </div>
 </section>
