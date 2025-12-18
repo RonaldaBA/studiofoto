@@ -1,5 +1,8 @@
 <?php
 session_start();
+require_once 'helper/connection.php';
+
+$paket = mysqli_query($connection, "SELECT * FROM paket ORDER BY nama_paket ASC");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -29,7 +32,7 @@ body {
 /* HEADER */
 .page-header {
     text-align: center;
-    padding: 70px 20px 40px; /* dipadatkan */
+    padding: 70px 20px 40px;
     background: linear-gradient(135deg, #f8fafc, #e5e7eb);
 }
 
@@ -53,7 +56,7 @@ section {
 .price-card {
     background: #ffffff;
     border-radius: 18px;
-    padding: 30px 25px;
+    padding: 26px 22px;
     box-shadow: 0 12px 25px rgba(0,0,0,0.06);
     transition: transform .25s ease, box-shadow .25s ease;
     height: 100%;
@@ -65,43 +68,43 @@ section {
 }
 
 .price-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
 }
 
 .price {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 800;
     color: #16a34a;
-    margin: 12px 0;
-}
-
-.price span {
-    font-size: 13px;
-    font-weight: 500;
-    color: #6b7280;
+    margin: 10px 0;
 }
 
 .price-list {
     list-style: none;
     padding-left: 0;
-    margin-top: 18px;
+    margin-top: 14px;
 }
 
 .price-list li {
-    padding: 7px 0;
+    padding: 6px 0;
     border-bottom: 1px solid #e5e7eb;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .price-list li:last-child {
     border-bottom: none;
 }
 
+.price-note {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 10px;
+}
+
 .price-card .btn {
-    margin-top: 22px;
+    margin-top: 16px;
     border-radius: 999px;
-    padding: 9px;
+    padding: 8px;
 }
 
 /* FOOTER */
@@ -119,24 +122,14 @@ footer {
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <img src="assets/img/richart_logo.jpg" alt="RichArt Studio" style="height:36px;margin-right:10px;">
+    <img src="assets/img/richart_logo.jpg" style="height:36px;margin-right:10px;">
     <a class="navbar-brand" href="home.php">RichArt Studio</a>
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto align-items-lg-center">
-            <li class="nav-item">
-                <a class="nav-link" href="home.php">Beranda</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active font-weight-bold" href="pricelist.php">Daftar Harga</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="contact.php">Kontak</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="home.php">Beranda</a></li>
+            <li class="nav-item"><a class="nav-link active font-weight-bold" href="pricelist.php">Daftar Harga</a></li>
+            <li class="nav-item"><a class="nav-link" href="contact.php">Kontak</a></li>
 
             <?php if(!isset($_SESSION['login'])): ?>
                 <li class="nav-item ml-lg-3">
@@ -161,59 +154,43 @@ footer {
 <!-- HEADER -->
 <div class="page-header">
     <h1>Daftar Harga</h1>
-    <p>Pilih paket photo studio sesuai kebutuhanmu</p>
+    <p>Pilih paket sesuai kebutuhanmu</p>
 </div>
 
 <!-- PRICELIST -->
 <section class="container">
     <div class="row">
 
+        <?php while($row = mysqli_fetch_assoc($paket)): ?>
         <div class="col-md-4 mb-4">
             <div class="price-card">
-                <div class="price-title">Basic Package</div>
-                <div class="price">Rp 50.000 <span>/ sesi</span></div>
-                <ul class="price-list">
-                    <li>⏱ 15 menit sesi foto</li>
-                    <li>📷 Unlimited shoot</li>
-                    <li>👥 Maks. 2 orang</li>
-                    <li>🖼 3 foto edit</li>
-                </ul>
-                <a href="login.php" class="btn btn-success btn-block">Booking</a>
-            </div>
-        </div>
+                <div class="price-title"><?= htmlspecialchars($row['nama_paket']) ?></div>
+                <div class="price">Rp <?= number_format($row['harga_paket'],0,',','.') ?></div>
 
-        <div class="col-md-4 mb-4">
-            <div class="price-card">
-                <div class="price-title">Standard Package</div>
-                <div class="price">Rp 75.000 <span>/ sesi</span></div>
                 <ul class="price-list">
-                    <li>⏱ 20 menit sesi foto</li>
-                    <li>📷 Unlimited shoot</li>
-                    <li>👥 Maks. 4 orang</li>
-                    <li>🖼 5 foto edit</li>
+                    <?php
+                    $desc = nl2br(htmlspecialchars($row['deskripsi']));
+                    foreach (explode('<br />', $desc) as $d):
+                        if(trim($d) != ''):
+                    ?>
+                        <li><?= $d ?></li>
+                    <?php endif; endforeach; ?>
                 </ul>
-                <a href="login.php" class="btn btn-success btn-block">Booking</a>
-            </div>
-        </div>
 
-        <div class="col-md-4 mb-4">
-            <div class="price-card">
-                <div class="price-title">Premium Package</div>
-                <div class="price">Rp 100.000 <span>/ sesi</span></div>
-                <ul class="price-list">
-                    <li>⏱ 30 menit sesi foto</li>
-                    <li>📷 Unlimited shoot</li>
-                    <li>👥 Maks. 6 orang</li>
-                    <li>🖼 8 foto edit</li>
-                </ul>
+                <?php if(!empty($row['note'])): ?>
+                <div class="price-note">
+                    <?= nl2br(htmlspecialchars($row['note'])) ?>
+                </div>
+                <?php endif; ?>
+
                 <a href="login.php" class="btn btn-success btn-block">Booking</a>
             </div>
         </div>
+        <?php endwhile; ?>
 
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
     &copy; <?= date('Y'); ?> RichArt Studio. All rights reserved.
 </footer>
