@@ -9,6 +9,8 @@ $result = mysqli_query($connection, "
         p.status_pemesanan,
         p.ringkasan_biaya,
         p.id_customer,
+        p.metode_pembayaran,
+        p.bukti_pembayaran,
         c.nama,
         pk.nama_paket,
         pk.deskripsi,
@@ -48,6 +50,7 @@ $bulan = [
                   <th>Nama Customer</th>
                   <th>ID Paket</th>
                   <th>Nama Paket</th>
+                  <th>Bukti Pembayaran</th>
                   <th style="width: 150">Aksi</th>
                 </tr>
               </thead>
@@ -89,6 +92,19 @@ $bulan = [
                     <td><?= $data['nama'] ?></td>
                     <td><?= $data['id_paket'] ?></td>
                     <td><?= $data['nama_paket'] ?></td>
+                    <td>
+                      <?php
+                      // Tampilkan badge kalau ada bukti & masih menunggu konfirmasi
+                      if (
+                          $data['metode_pembayaran'] === 'QRIS' &&
+                          $data['status_pemesanan'] === 'Menunggu Pembayaran' &&
+                          !empty($data['bukti_pembayaran'])
+                      ): ?>
+                        <span class="badge badge-success p-2">📎 Ada Bukti Baru</span>
+                      <?php else: ?>
+                        &mdash;
+                      <?php endif; ?>
+                    </td>
                     <td>
                       <?php
                       $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
