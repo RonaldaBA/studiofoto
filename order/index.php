@@ -12,10 +12,8 @@ $result = mysqli_query($connection, "
         p.metode_pembayaran,
         p.bukti_pembayaran,
         c.nama,
-        pk.nama_paket,
-        pk.deskripsi,
         p.id_paket,
-        pk.harga_paket
+        pk.nama_paket
     FROM pemesanan p
     JOIN customer c ON p.id_customer = c.id_customer
     JOIN paket pk ON p.id_paket = pk.id_paket
@@ -26,26 +24,82 @@ $bulan = [
     'Mei', 'Juni', 'Juli', 'Agustus',
     'September', 'Oktober', 'November', 'Desember'
 ];
-
 ?>
 
+<style>
+/* ===== TABLE UI (SELARAS HOME & DASHBOARD) ===== */
+
+.section-header h1 {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* CARD */
+.card {
+  border-radius: 18px;
+  border: none;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.06);
+}
+
+/* TABLE */
+.table thead th {
+  background: #f9fafb;
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+  border-bottom: none;
+}
+
+.table tbody td {
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+/* PRICE */
+.price-text {
+  font-weight: 700;
+  color: #16a34a;
+}
+
+/* STATUS BADGE */
+.badge-pill {
+  font-size: 12px;
+  padding: 6px 14px;
+}
+
+/* BUTTON */
+.btn-icon {
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+/* ICON COLOR */
+.icon-green { color: #16a34a; }
+.icon-blue  { color: #2563eb; }
+.icon-red   { color: #dc2626; }
+</style>
+
 <section class="section">
-  <div class="section-header d-flex justify-content-between">
-    <h1>Daftar Pesanan</h1>
-    <!-- <a href="./create.php" class="btn btn-primary"><i class="fas fa-plus-square mr-2"></i>Tambah Data</a> -->
+  <div class="section-header d-flex justify-content-between align-items-center">
+    <h1>
+      <i class="fas fa-clipboard-list icon-green mr-2"></i>
+      Daftar Pesanan
+    </h1>
   </div>
+
   <div class="row">
     <div class="col-12">
       <div class="card">
         <div class="card-body">
+
           <div class="table-responsive">
-            <table class="table table-hover table-striped w-100" id="table-1">
+            <table class="table table-hover w-100" id="table-1">
               <thead>
                 <tr>
                   <th>ID Pemesanan</th>
-                  <th>Tanggal Pemesanan</th>
-                  <th>Status Pemesanan</th>
-                  <th>Ringkasan Biaya</th>
+                  <th>Tanggal</th>
+                  <th>Status</th>
+                  <th>Biaya</th>
                   <th>ID Customer</th>
                   <th>Nama Customer</th>
                   <th>ID Paket</th>
@@ -128,43 +182,28 @@ $bulan = [
               </tbody>
             </table>
           </div>
+
         </div>
       </div>
     </div>
+  </div>
 </section>
 
-<?php
-require_once '../layout/_bottom.php';
-?>
-<!-- Page Specific JS File -->
-<?php
-if (isset($_SESSION['info'])) :
-  if ($_SESSION['info']['status'] == 'success') {
-?>
-    <script>
-      iziToast.success({
-        title: 'Sukses',
-        message: `<?= $_SESSION['info']['message'] ?>`,
-        position: 'topCenter',
-        timeout: 5000
-      });
-    </script>
-  <?php
-  } else {
-  ?>
-    <script>
-      iziToast.error({
-        title: 'Gagal',
-        message: `<?= $_SESSION['info']['message'] ?>`,
-        timeout: 5000,
-        position: 'topCenter'
-      });
-    </script>
-<?php
-  }
+<?php require_once '../layout/_bottom.php'; ?>
 
+<!-- NOTIF -->
+<?php if (isset($_SESSION['info'])) : ?>
+<script>
+  iziToast.<?= $_SESSION['info']['status']=='success'?'success':'error' ?>({
+    title: '<?= $_SESSION['info']['status']=='success'?'Sukses':'Gagal' ?>',
+    message: `<?= $_SESSION['info']['message'] ?>`,
+    position: 'topCenter',
+    timeout: 5000
+  });
+</script>
+<?php
   unset($_SESSION['info']);
-  $_SESSION['info'] = null;
 endif;
 ?>
+
 <script src="../assets/js/page/modules-datatables.js"></script>
