@@ -139,6 +139,7 @@ body {
       <?php
       require_once '_header.php';
       require_once '_sidenav.php';
+      require_once '../helper/check_guest_expired.php';
       ?>
       <!-- Main Content -->
       <div class="main-content">

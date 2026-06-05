@@ -1,6 +1,11 @@
 <?php
 session_start();
+
+$bookingLink = isset($_SESSION['login'])
+    ? 'dashboard_customer/dashboard_customer.php'
+    : 'guest/booking.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -130,6 +135,11 @@ footer {
             <li class="nav-item">
                 <a class="nav-link" href="contact.php">Kontak</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="tracking.php">
+                    Lacak Pesanan
+                </a>
+            </li>
 
             <?php if(!isset($_SESSION['login'])): ?>
                 <li class="nav-item ml-lg-3">
@@ -156,7 +166,7 @@ footer {
     <div>
         <h1>Framing Your Moment Perfectly</h1>
         <p>Photo studio modern dengan konsep minimalis & pencahayaan profesional</p>
-        <a href="login.php" class="btn btn-success mt-3 px-4 py-2 rounded-pill">
+        <a href="<?= $bookingLink ?>" class="btn btn-success mt-3 px-4 py-2 rounded-pill">
             Booking Sekarang
         </a>
     </div>
@@ -198,7 +208,7 @@ footer {
     <div class="cta">
         <h4>Siap mengabadikan momen terbaikmu?</h4>
         <p class="mt-2">Booking sekarang dan rasakan pengalaman photo studio modern</p>
-        <a href="login.php" class="btn btn-light mt-3 px-4 rounded-pill">
+        <a href="<?= $bookingLink ?>" class="btn btn-success mt-3 px-4 rounded-pill">
             Mulai Booking
         </a>
     </div>

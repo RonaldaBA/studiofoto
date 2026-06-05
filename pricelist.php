@@ -39,71 +39,137 @@ $paket = mysqli_query(
 
 <style>
 body{
-    font-family:'Segoe UI',system-ui,sans-serif;
-    background:#f8fafc;
-    color:#1f2937
+font-family:'Segoe UI',system-ui,sans-serif;
+background:#f8fafc;
+color:#1f2937;
 }
-.navbar{padding:14px 32px}
-.navbar-brand{font-weight:700}
+
+/* NAVBAR */
+.navbar{
+padding:14px 32px;
+}
+
+.navbar-brand{
+font-weight:700;
+}
 
 /* HEADER */
 .page-header{
-    text-align:center;
-    padding:70px 20px 40px;
-    background:linear-gradient(135deg,#f8fafc,#e5e7eb)
+text-align:center;
+padding:60px 20px;
+background:linear-gradient(135deg,#f8fafc,#e5e7eb);
+margin-bottom:30px;
 }
-.page-header h1{font-size:36px;font-weight:700}
-.page-header p{color:#6b7280;font-size:15px;margin-top:8px}
+
+.page-header h1{
+font-size:48px;
+font-weight:700;
+margin-bottom:10px;
+}
+
+.page-header p{
+color:#6b7280;
+font-size:16px;
+}
 
 /* FILTER */
 .filter-box{
-    background:#fff;
-    border-radius:18px;
-    padding:20px;
-    box-shadow:0 10px 25px rgba(0,0,0,.05)
+background:#fff;
+border-radius:22px;
+padding:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.05);
+margin-top:-10px;
+}
+
+.filter-box .form-control{
+border-radius:14px;
+height:50px;
 }
 
 /* CARD */
 .price-card{
     background:#fff;
-    border-radius:18px;
-    padding:26px 22px;
-    box-shadow:0 12px 25px rgba(0,0,0,.06);
-    transition:.25s;
-    height:100%
+    border:none;
+    border-radius:24px;
+    padding:24px;
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+    transition:.3s;
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
 }
+
 .price-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 20px 35px rgba(0,0,0,.12)
+    transform:translateY(-8px);
+    box-shadow:0 20px 40px rgba(0,0,0,.10);
 }
-.price-title{font-size:17px;font-weight:700}
-.price{font-size:28px;font-weight:800;color:#16a34a;margin:10px 0}
-.price-list{list-style:none;padding:0;margin-top:14px}
+
+.price-title{
+    font-size:20px;
+    font-weight:700;
+    color:#0f172a;
+    line-height:1.4;
+    min-height:60px;
+}
+
+.price{
+    font-size:36px;
+    font-weight:800;
+    color:#16a34a;
+    margin:12px 0 18px;
+}
+
+.price-list{
+    list-style:none;
+    padding:0;
+    margin:0;
+    flex-grow:1;
+}
+
 .price-list li{
-    padding:6px 0;
+    padding:10px 0;
     border-bottom:1px solid #e5e7eb;
-    font-size:13px
+    font-size:14px;
+    color:#475569;
+    line-height:1.6;
 }
-.price-list li:last-child{border-bottom:none}
+
+.price-list li:last-child{
+    border-bottom:none;
+}
+
 .price-note{
-    font-size:12px;
-    color:#6b7280;
-    margin-top:8px
+    margin-top:15px;
+    font-size:13px;
+    color:#64748b;
+    min-height:45px;
 }
+
 .btn-book{
-    margin-top:14px;
-    border-radius:999px;
-    padding:8px
+    margin-top:20px;
+    width:100%;
+    border:none;
+    border-radius:12px;
+    padding:12px;
+    font-weight:600;
+    background:#16a34a;
+}
+
+.btn-book:hover{
+    background:#15803d;
 }
 
 /* FOOTER */
 footer{
-    background:#0f172a;
-    color:#cbd5f5;
-    padding:18px;
-    text-align:center;
-    font-size:13px
+margin-top:40px;
+background:#0f172a;
+color:#cbd5f5;
+padding:20px;
+text-align:center;
+font-size:13px;
 }
+
 </style>
 </head>
 
@@ -156,7 +222,7 @@ footer{
                        class="form-control rounded-pill"
                        placeholder="Cari paket foto, cetak, studio...">
             </div>
-            <div class="col-md-4 mb-2">
+            <div class="col-lg-3 col-md-6 mb-4">
                 <select name="kategori" class="form-control rounded-pill">
                     <option value="">Semua Kategori</option>
                     <option value="Cetak" <?= $kategori=='Cetak'?'selected':'' ?>>Cetak Foto</option>
@@ -175,40 +241,77 @@ footer{
 </section>
 
 <!-- LIST PAKET -->
-<section class="container">
+<section class="container mb-5">
     <div class="row">
 
     <?php if(mysqli_num_rows($paket) > 0): ?>
+
         <?php while($row = mysqli_fetch_assoc($paket)): ?>
-        <div class="col-md-4 mb-4">
-            <div class="price-card">
-                <div class="price-title"><?= htmlspecialchars($row['nama_paket']) ?></div>
-                <div class="price">Rp <?= number_format($row['harga_paket'],0,',','.') ?></div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-4 d-flex">
+
+            <div class="price-card w-100">
+
+                <div class="price-title">
+                    <?= htmlspecialchars($row['nama_paket']) ?>
+                </div>
+
+                <div class="price">
+                    Rp <?= number_format($row['harga_paket'],0,',','.') ?>
+                </div>
 
                 <ul class="price-list">
+
                     <?php
                     $desc = explode("\n", $row['deskripsi']);
-                    foreach ($desc as $d):
-                        if(trim($d)!=''):
+
+                    foreach($desc as $item):
+
+                        if(trim($item) != ''):
                     ?>
-                        <li><?= htmlspecialchars($d) ?></li>
-                    <?php endif; endforeach; ?>
+
+                    <li>
+                        ✓ <?= htmlspecialchars(trim($item)) ?>
+                    </li>
+
+                    <?php
+                        endif;
+                    endforeach;
+                    ?>
+
                 </ul>
 
                 <?php if(!empty($row['note'])): ?>
+
                     <div class="price-note">
                         <?= nl2br(htmlspecialchars($row['note'])) ?>
                     </div>
+
                 <?php endif; ?>
 
-                <a href="login.php" class="btn btn-success btn-book btn-block">Booking</a>
+                <a href="guest/booking.php"
+                   class="btn btn-success btn-book">
+
+                    Booking Sebagai Tamu
+
+                </a>
+
             </div>
+
         </div>
+
         <?php endwhile; ?>
+
     <?php else: ?>
-        <div class="col-12 text-center text-muted mt-4">
-            <p>Tidak ada paket yang sesuai.</p>
+
+        <div class="col-12 text-center py-5">
+
+            <h5 class="text-muted">
+                Paket tidak ditemukan
+            </h5>
+
         </div>
+
     <?php endif; ?>
 
     </div>

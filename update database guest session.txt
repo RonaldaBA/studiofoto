@@ -1,0 +1,72 @@
+CREATE TABLE guest_account (
+    id_guest INT AUTO_INCREMENT PRIMARY KEY,
+    id_customer INT NOT NULL,
+    expired_at DATETIME NOT NULL,
+    status ENUM('active','inactive') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+===================================================
+
+ALTER TABLE guest_account
+ADD INDEX idx_guest_customer (id_customer);
+
+===================================================
+
+ALTER TABLE guest_account
+ADD COLUMN guest_token VARCHAR(255) NULL AFTER id_customer;
+
+===================================================
+
+ALTER TABLE guest_account
+ADD UNIQUE (guest_token);
+
+===================================================
+
+ALTER TABLE guest_account
+ADD COLUMN guest_token VARCHAR(255) NULL AFTER id_customer;
+
+===================================================
+
+ALTER TABLE guest_account
+ADD UNIQUE (guest_token);
+
+===================================================
+
+UPDATE guest_account
+SET status='inactive'
+WHERE expired_at < NOW();
+
+==================================================
+
+ALTER TABLE customer
+ADD COLUMN account_type
+ENUM('guest','registered')
+DEFAULT 'registered';
+
+==================================================
+
+ALTER TABLE customer
+ADD account_type ENUM(
+'guest',
+'registered'
+)
+DEFAULT 'guest';
+
+===================================================
+
+UPDATE customer
+SET account_type = 'registered';
+
+===================================================
+
+ALTER TABLE customer
+MODIFY password VARCHAR(255);
+
+===================================================
+
+ALTER TABLE customer
+ADD account_type ENUM('guest','registered')
+DEFAULT 'guest';
+
+===================================================

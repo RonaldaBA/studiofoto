@@ -21,8 +21,20 @@ if (isset($_POST['submit'])) {
         if (mysqli_num_rows($cek) > 0) {
             $error = "Email sudah terdaftar!";
         } else {
-            $query = "INSERT INTO customer (nama, email, password, no_hp) 
-                      VALUES ('$nama', '$email', '$password', '$nohp')";
+            $query = "INSERT INTO customer(
+                nama,
+                email,
+                password,
+                no_hp,
+                account_type
+            )
+            VALUES(
+                '$nama',
+                '$email',
+                '$password',
+                '$no_hp',
+                'registered'
+            )";
             mysqli_query($connection, $query);
             $success = true;
         }

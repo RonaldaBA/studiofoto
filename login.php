@@ -32,13 +32,40 @@ if (isset($_POST['submit'])) {
     $resultCustomer = mysqli_query($connection, $sqlCustomer);
     $customer = mysqli_fetch_assoc($resultCustomer);
 
-    if ($customer && $password === $customer['password']) {
-        $_SESSION['login'] = true;
-        $_SESSION['id_customer'] = $customer['id_customer'];
-        $_SESSION['nama'] = $customer['nama'];
+    if ($customer) {
 
-        header('Location: dashboard_customer/dashboard_customer.php');
-        exit;
+        $validPassword = false;
+
+        // Support akun lama (plain text)
+        if ($password === $customer['password']) {
+            $validPassword = true;
+        }
+
+        // Support akun hasil upgrade guest (password_hash)
+        if (password_verify($password, $customer['password'])) {
+            $validPassword = true;
+        }
+
+        if ($validPassword) {
+
+            // Cegah akun guest login dari halaman login biasa
+            if (
+                isset($customer['account_type']) &&
+                $customer['account_type'] === 'guest'
+            ) {
+
+                $error = true;
+
+            } else {
+
+                $_SESSION['login'] = true;
+                $_SESSION['id_customer'] = $customer['id_customer'];
+                $_SESSION['nama'] = $customer['nama'];
+
+                header('Location: dashboard_customer/dashboard_customer.php');
+                exit;
+            }
+        }
     }
 
     $error = true;
